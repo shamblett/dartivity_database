@@ -7,8 +7,9 @@
 
 library dartivity_database;
 
-import 'dart:io';
+import 'dart:async';
 
-import 'package:wilt/wilt.dart';
+import 'package:wilt/wilt_server_client.dart';
+import 'package:json_object/json_object.dart' as json;
 
 part 'src/dartivity_database.dart';
