@@ -11,9 +11,18 @@ class DartivityDatabase {
   /// Wilt
   WiltServerClient _wilt;
 
-  /// Always the default port and HTTP
-  DartivityDatabase(String hostname) {
+  /// Database name
+  static const String DB_NAME = "dartivity";
+
+  /// Always the default port and HTTP, the database already exists, we
+  /// do not create or delete it.
+  DartivityDatabase(String hostname,
+      [String username = null, String password = null]) {
     _wilt = new WiltServerClient(hostname, "5984", "http://");
+    _wilt.db = DB_NAME;
+
+    if ((username != null) && (password != null)) _wilt.login(
+        username, password);
   }
 
   /// login
@@ -42,10 +51,10 @@ class DartivityDatabase {
   }
 
   /// get
-  /// Returns a json string, in practice this will be a DartivityResource.
-  /// Null indicates the operation has failed for whatever reason
+  /// Returns a json object, in practice this will be a DartivityResource.
+  /// Null indicates the operation has failed for whatever reason.
   Future<json.JsonObject> get(String key, [String rev = null]) async {
-    var completer = new Completer();
+    Completer completer = new Completer();
     var res = await _wilt.getDocument(key, rev);
     if (!res.error) {
       json.JsonObject doc = res.jsonCouchResponse;
@@ -56,6 +65,24 @@ class DartivityDatabase {
       }
     } else {
       completer.complete(null);
+    }
+    return completer.future;
+  }
+
+  /// delete
+  /// False indicates the delete operation has failed.
+  Future<bool> delete(String key, String rev) async {
+    Completer completer = new Completer();
+    var res = await _wilt.deleteDocument(key, rev);
+    if (!res.error) {
+      json.JsonObject doc = res.jsonCouchResponse;
+      if (doc.id == key) {
+        completer.complete(true);
+      } else {
+        completer.complete(false);
+      }
+    } else {
+      completer.complete(false);
     }
     return completer.future;
   }
