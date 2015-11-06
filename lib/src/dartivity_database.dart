@@ -13,9 +13,8 @@ class _DartivityDatabase {
 
   /// Database name
 
-  /// Always the default port and HTTP, the database already exists, we
-  /// do not create or delete it.
-  DartivityDatabase(String hostname, String dbName,
+  /// Always the default port and HTTP.
+  _DartivityDatabase(String hostname, String dbName,
       [String username = null, String password = null]) {
     _wilt = new WiltServerClient(hostname, "5984", "http://");
     _wilt.db = dbName;
@@ -30,20 +29,16 @@ class _DartivityDatabase {
   }
 
   /// put
-  /// Put a database record. False indicates the put operation has failed.
-  Future<bool> put(String key, json.JsonObject record,
+  /// Put a database record. Returns the database response or
+  /// null on error.
+  Future<json.JsonObject> put(String key, json.JsonObject record,
       [String rev = null]) async {
     Completer completer = new Completer();
     var res = await _wilt.putDocument(key, record, rev);
     if (!res.error) {
-      json.JsonObject doc = res.jsonCouchResponse;
-      if (doc.id == key) {
-        completer.complete(true);
-      } else {
-        completer.complete(false);
-      }
+      completer.complete(res.jsonCouchResponse);
     } else {
-      completer.complete(false);
+      completer.complete(null);
     }
     return completer.future;
   }
@@ -109,7 +104,12 @@ class _DartivityDatabase {
   bool descending: false}) async {
     Completer completer = new Completer();
     var res = await _wilt.getAllDocs(
-        includeDocs, limit, startKey, endKey, keys, descending);
+        includeDocs: includeDocs,
+        limit: limit,
+        startKey: startKey,
+        endKey: endKey,
+        keys: keys,
+        descending: descending);
     if (!res.error) {
       completer.complete(res.jsonCouchResponse);
     } else {

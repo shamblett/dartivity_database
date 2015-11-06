@@ -8,7 +8,6 @@
 library dartivity_database;
 
 import 'dart:async';
-import 'dart:isolate';
 
 import 'package:wilt/wilt_server_client.dart';
 import 'package:json_object/json_object.dart' as json;

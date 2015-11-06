@@ -27,11 +27,19 @@ class DartivityResource {
   dynamic get resource => _resource;
 
   /// fromIotivity
+  /// Creates a resource from an Iotivity resource
   DartivityResource.fromIotivity(DartivityIotivityResource resource,
       String clientId) {
     _id = clientId + '-' + resource.identifier;
     _provider = resource.provider;
     _resource = resource;
+  }
+
+  /// fromJsonObject
+  /// Creates a resource from a JsonObject, usually from a database get
+  DartivityResource.fromJsonObject(json.JsonObject record) {
+
+
   }
 
   /// toString
@@ -44,5 +52,12 @@ class DartivityResource {
     bool state = false;
     this.id == other.id ? state = true : null;
     return state;
+  }
+
+  /// toJsonObject
+  json.JsonObject toJsonObject() {
+    json.JsonObject ret;
+
+    return ret;
   }
 }
