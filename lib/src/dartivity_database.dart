@@ -7,19 +7,18 @@
 
 part of dartivity_database;
 
-class DartivityDatabase {
+class _DartivityDatabase {
   /// Wilt
   WiltServerClient _wilt;
 
   /// Database name
-  static const String DB_NAME = "dartivity";
 
   /// Always the default port and HTTP, the database already exists, we
   /// do not create or delete it.
-  DartivityDatabase(String hostname,
+  DartivityDatabase(String hostname, String dbName,
       [String username = null, String password = null]) {
     _wilt = new WiltServerClient(hostname, "5984", "http://");
-    _wilt.db = DB_NAME;
+    _wilt.db = dbName;
 
     if ((username != null) && (password != null)) _wilt.login(
         username, password);
@@ -31,12 +30,11 @@ class DartivityDatabase {
   }
 
   /// put
-  /// Put a database record, the resource parameter
-  /// can be anything we can jsonify, in practice it will be a
-  /// DartivityResource. False indicates the put operation has failed.
-  Future<bool> put(String key, dynamic resource, [String rev = null]) async {
+  /// Put a database record. False indicates the put operation has failed.
+  Future<bool> put(String key, json.JsonObject resource,
+      [String rev = null]) async {
     Completer completer = new Completer();
-    var res = await _wilt.putDocument(key, resource.toJsonObject(), rev);
+    var res = await _wilt.putDocument(key, resource, rev);
     if (!res.error) {
       json.JsonObject doc = res.jsonCouchResponse;
       if (doc.id == key) {
@@ -51,7 +49,7 @@ class DartivityDatabase {
   }
 
   /// get
-  /// Returns a json object, in practice this will be a DartivityResource.
+  /// Returns a json object.
   /// Null indicates the operation has failed for whatever reason.
   Future<json.JsonObject> get(String key, [String rev = null]) async {
     Completer completer = new Completer();
@@ -70,7 +68,8 @@ class DartivityDatabase {
   }
 
   /// delete
-  /// False indicates the delete operation has failed.
+  /// False indicates the delete operation has failed, note
+  /// a revision must be supplied.
   Future<bool> delete(String key, String rev) async {
     Completer completer = new Completer();
     var res = await _wilt.deleteDocument(key, rev);
