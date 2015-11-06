@@ -31,10 +31,10 @@ class _DartivityDatabase {
 
   /// put
   /// Put a database record. False indicates the put operation has failed.
-  Future<bool> put(String key, json.JsonObject resource,
+  Future<bool> put(String key, json.JsonObject record,
       [String rev = null]) async {
     Completer completer = new Completer();
-    var res = await _wilt.putDocument(key, resource, rev);
+    var res = await _wilt.putDocument(key, record, rev);
     if (!res.error) {
       json.JsonObject doc = res.jsonCouchResponse;
       if (doc.id == key) {
@@ -80,6 +80,38 @@ class _DartivityDatabase {
       } else {
         completer.complete(false);
       }
+    } else {
+      completer.complete(false);
+    }
+    return completer.future;
+  }
+
+  /// putMany
+  /// Puts many records as a bulk insert/update
+  Future<json.JsonObject> putMany(List<json.JsonObject> records) async {
+    Completer completer = new Completer();
+    var res = await _wilt.bulk(records);
+    if (!res.error) {
+      completer.complete(res.jsonCouchResponse);
+    } else {
+      completer.complete(false);
+    }
+    return completer.future;
+  }
+
+  /// getAll
+  /// Gets all records in the input parameter set
+  Future<json.JsonObject> getAll({bool includeDocs: false,
+  int limit: null,
+  String startKey: null,
+  String endKey: null,
+  List<String> keys: null,
+  bool descending: false}) async {
+    Completer completer = new Completer();
+    var res = await _wilt.getAllDocs(
+        includeDocs, limit, startKey, endKey, keys, descending);
+    if (!res.error) {
+      completer.complete(res.jsonCouchResponse);
     } else {
       completer.complete(false);
     }
