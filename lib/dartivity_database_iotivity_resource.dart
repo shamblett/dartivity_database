@@ -94,4 +94,10 @@ class DartivityIotivityResource {
     json.JsonObject temp = new json.JsonObject.fromMap(toMap());
     return temp.toString();
   }
+
+  /// toJsonObject
+  json.JsonObject toJsonObject() {
+    json.JsonObject temp = new json.JsonObject.fromMap(toMap());
+    return temp;
+  }
 }

@@ -14,9 +14,9 @@ class DartivityResource {
   String get id => _id;
 
   /// Provider
-  Provider _provider = Provider.unknown;
+  String _provider = providerUnknown;
 
-  Provider get provider => _provider;
+  String get provider => _provider;
 
   /// Database revision
   String revision;
@@ -35,13 +35,12 @@ class DartivityResource {
     _resource = resource;
   }
 
-  /// fromJsonObject
-  /// Creates a resource from a JsonObject, usually from a database get
-  DartivityResource.fromJsonObject(json.JsonObject record) {
+  /// fromDBRecord
+  /// Creates a resource from a database record
+  DartivityResource.fromDbRecord(json.JsonObject record) {
 
 
   }
-
   /// toString
   String toString() {
     return "Id : ${id}, Provider : ${provider.toString()}";
@@ -58,6 +57,10 @@ class DartivityResource {
   json.JsonObject toJsonObject() {
     json.JsonObject ret;
 
+    ret.id = id;
+    ret.provider = provider;
+    ret.revision = revision;
+    ret.resource = resource.toJsonObject();
     return ret;
   }
 }

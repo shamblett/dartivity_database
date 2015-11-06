@@ -32,7 +32,7 @@ class DartivityResourceDatabase {
     if (record == null) {
       completer.complete(null);
     } else {
-      DartivityResource res = new DartivityResource.fromJsonObject(record);
+      DartivityResource res = new DartivityResource.fromDbRecord(record);
       completer.complete(res);
     }
     return completer.future;
@@ -46,7 +46,7 @@ class DartivityResourceDatabase {
     json.JsonObject res = await _db.put(
         resource.id, resource.toJsonObject(), resource.revision);
     if (res != null) {
-      completer.complete(new DartivityResource.fromJsonObject(res));
+      completer.complete(new DartivityResource.fromDbRecord(res));
     } else {
       completer.complete(null);
     }

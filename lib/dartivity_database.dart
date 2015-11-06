@@ -21,8 +21,6 @@ part 'src/dartivity_database.dart';
 
 /// Library globals
 
-/// Provider
-enum Provider {
-  unknown,
-  iotivity
-}
+/// Providers
+final String providerUnknown = "Unknown";
+final String providerIotivity = "iotivity";
