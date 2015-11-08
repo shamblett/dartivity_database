@@ -6,7 +6,8 @@ homepage: https://github.com/shamblett/dartivity_database
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
-  wilt: '>3.0.0'
+  wilt: '3.1.2'
   json_object: '>=1.0.19'
+  crypto: 'any'
 dev_dependencies:
   test: '>=0.12.0 <0.13.0'
