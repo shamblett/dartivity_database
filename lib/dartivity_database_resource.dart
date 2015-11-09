@@ -21,6 +21,11 @@ class DartivityResource {
   /// Database revision
   String revision;
 
+  /// Dartivity client id
+  String _clientId;
+
+  String get clientId => _clientId;
+
   /// The actual resource from the provider
   dynamic _resource;
 
@@ -30,17 +35,21 @@ class DartivityResource {
   /// Creates a resource from an Iotivity resource
   DartivityResource.fromIotivity(DartivityIotivityResource resource,
       String clientId) {
-    _id = clientId + '-' + resource.identifier;
+    // Get the id as a hash from the client id and the device id
+    String tmp = clientId + resource.identifier;
+    var hasher = new MD5();
+    hasher.add(tmp.codeUnits);
+    _id = CryptoUtils.bytesToHex(hasher.close());
+
+    _clientId = clientId;
     _provider = resource.provider;
     _resource = resource;
   }
 
   /// fromDBRecord
   /// Creates a resource from a database record
-  DartivityResource.fromDbRecord(json.JsonObject record) {
+  DartivityResource.fromDbRecord(json.JsonObject record) {}
 
-
-  }
   /// toString
   String toString() {
     return "Id : ${id}, Provider : ${provider.toString()}";
