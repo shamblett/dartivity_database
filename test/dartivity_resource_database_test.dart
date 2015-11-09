@@ -13,10 +13,13 @@ main() {
   /* Group 1 - DartivityIotivityResource tests */
   group("1. Dartivity Iotivity Resource - ", () {
     test("Construction", () {
-      iotivityResource1 =
-      new DartivityIotivityResource('/sample/simulator/light/1',
-          '/sample/simulator/light/1', 'localhost', ['res1', 'res2'],
-          ['int1', 'int2'], true);
+      iotivityResource1 = new DartivityIotivityResource(
+          '/sample/simulator/light/1',
+          '/sample/simulator/light/1',
+          'localhost',
+          ['res1', 'res2'],
+          ['int1', 'int2'],
+          true);
       expect(iotivityResource1.id, '/sample/simulator/light/1');
       expect(iotivityResource1.uri, '/sample/simulator/light/1');
       expect(iotivityResource1.host, 'localhost');
@@ -26,10 +29,13 @@ main() {
     });
 
     test("Equality", () {
-      iotivityResource2 =
-      new DartivityIotivityResource('/sample/simulator/light/2',
-          '/sample/simulator/light/1', 'localhost', ['res1', 'res2'],
-          ['int1', 'int2'], true);
+      iotivityResource2 = new DartivityIotivityResource(
+          '/sample/simulator/light/2',
+          '/sample/simulator/light/1',
+          'localhost',
+          ['res1', 'res2'],
+          ['int1', 'int2'],
+          true);
       expect(iotivityResource1 == iotivityResource1, true);
       expect(iotivityResource1 == iotivityResource2, false);
     });
@@ -59,14 +65,17 @@ main() {
       expect(jsonobj.interfaceTypes, ['int1', 'int2']);
       expect(jsonobj.provider, 'iotivity');
     });
+
+    test("To Json", () {
+      String jsonstr = iotivityResource1.toJson();
+      expect(jsonstr,
+          '{"id":"/sample/simulator/light/1","uri":"/sample/simulator/light/1","host":"localhost","provider":"iotivity","observable":true,"resourceTypes":["res1","res2"],"interfaceTypes":["int1","int2"]}');
+    });
   });
 
   /* Group 2 - DartivityResource tests */
   group("2. Dartivity Resource from Iotivity- ", () {
-    test("Construction", () {
-
-
-    });
+    test("Construction", () {});
   });
 
   /* Group 3 - DartivityResourceDatabase tests */
