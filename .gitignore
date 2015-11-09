@@ -7,6 +7,7 @@ packages
 # Or the files created by dart2js.
 *.dart.js
 *.js_
+/test/dartivity_database_test_cfg.dart
 *.js.deps
 *.js.map
 
