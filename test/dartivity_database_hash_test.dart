@@ -1,8 +1,9 @@
 import 'dart:io' show exit, File;
 import 'package:crypto/crypto.dart' show MD5, CryptoUtils;
+import 'dartivity_database_test_cfg.dart' as cfg;
 
 int main(List<String> args) {
-  String clientId = 'dell-base-d5dcb860-3ad8-5329-ab54-5c3c9c5f2242%625';
+  String clientId = cfg.clientId;
   String deviceId = '/sample/simulator/light/1';
   String id = clientId + deviceId;
   var hasher = new MD5();
