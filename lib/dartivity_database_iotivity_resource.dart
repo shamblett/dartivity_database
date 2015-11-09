@@ -8,14 +8,10 @@
 part of dartivity_database;
 
 class DartivityIotivityResource {
+  /// Client specific resource identifier
+  String _id;
 
-  /// Resource identifier
-  ///
-  /// This will be guaranteed unique for every resource-per-server
-  /// independent of how this was discovered.
-  String _identifier;
-
-  String get identifier => _identifier;
+  String get id => _id;
 
   /// Host
   String _host;
@@ -28,7 +24,7 @@ class DartivityIotivityResource {
   String get uri => _uri;
 
   /// Provider
-  final Provider provider = Provider.iotivity;
+  final String provider = providerIotivity;
 
   /// Resource types
   List<String> _resourceTypes;
@@ -46,9 +42,9 @@ class DartivityIotivityResource {
   bool get observable => _observable;
 
   /// Construction
-  DartivityIotivityResource(int ptr, String id, String uri, String host,
+  DartivityIotivityResource(String id, String uri, String host,
       List<String> resTypes, List<String> intTypes, bool observable) {
-    _identifier = id;
+    _id = id;
     _uri = uri;
     _host = host;
     _observable = observable;
@@ -58,15 +54,15 @@ class DartivityIotivityResource {
 
   /// toString
   String toString() {
-    return _identifier;
+    return _id;
   }
 
   /// Equality
   bool operator ==(DartivityIotivityResource other) {
-    return (other.identifier == _identifier);
+    return (other.id == _id);
   }
 
-  static const String MAP_IDENTIFIER = "Identifier";
+  static const String MAP_IDENTIFIER = "Id";
   static const String MAP_URI = "Uri";
   static const String MAP_HOST = "Host";
   static const String MAP_PROVIDER = "Provider";
@@ -78,7 +74,7 @@ class DartivityIotivityResource {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> returnMap = new Map<String, dynamic>();
 
-    returnMap[MAP_IDENTIFIER] = this._identifier;
+    returnMap[MAP_IDENTIFIER] = this._id;
     returnMap[MAP_URI] = this._uri;
     returnMap[MAP_HOST] = this._host;
     returnMap[MAP_PROVIDER] = this.provider;
