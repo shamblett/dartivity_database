@@ -62,13 +62,13 @@ class DartivityIotivityResource {
     return (other.id == _id);
   }
 
-  static const String MAP_IDENTIFIER = "Id";
-  static const String MAP_URI = "Uri";
-  static const String MAP_HOST = "Host";
-  static const String MAP_PROVIDER = "Provider";
-  static const String MAP_OBSERVABLE = "Observeable";
-  static const String MAP_RESOURCE_TYPES = "ResTypes";
-  static const String MAP_INTERFACE_TYPES = "IntTypes";
+  static const String MAP_IDENTIFIER = "id";
+  static const String MAP_URI = "uri";
+  static const String MAP_HOST = "host";
+  static const String MAP_PROVIDER = "provider";
+  static const String MAP_OBSERVABLE = "observable";
+  static const String MAP_RESOURCE_TYPES = "resourceTypes";
+  static const String MAP_INTERFACE_TYPES = "interfaceTypes";
 
   /// toMap
   Map<String, dynamic> toMap() {
