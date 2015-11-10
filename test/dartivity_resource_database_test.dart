@@ -3,12 +3,13 @@ library dartivity_resource_database_test;
 import 'package:json_object/json_object.dart' as json;
 import 'package:dartivity_database/dartivity_database.dart';
 import 'package:test/test.dart';
-import 'dartivity_database_test_cfg.dart';
+import 'dartivity_database_test_cfg.dart' as cfg;
 
 main() {
   DartivityIotivityResource iotivityResource1;
   DartivityIotivityResource iotivityResource2;
-  DartivityResource dartivityResource;
+  DartivityResource dartivityResource1;
+  DartivityResource dartivityResource2;
 
   /* Group 1 - DartivityIotivityResource tests */
   group("1. Dartivity Iotivity Resource - ", () {
@@ -74,8 +75,16 @@ main() {
   });
 
   /* Group 2 - DartivityResource tests */
-  group("2. Dartivity Resource from Iotivity- ", () {
-    test("Construction", () {});
+  group("2. Dartivity Resource - ", () {
+    test("Construction - from Iotivity", () {
+      dartivityResource1 =
+      new DartivityResource.fromIotivity(iotivityResource1, cfg.clientId);
+      expect(dartivityResource1.id, '6ad1b60d34a3882a331376add8999ecd');
+      expect(dartivityResource1.clientId, cfg.clientId);
+      expect(dartivityResource1.provider, 'iotivity');
+      expect(dartivityResource1.revision, null);
+      expect(dartivityResource1.resource, iotivityResource1);
+    });
   });
 
   /* Group 3 - DartivityResourceDatabase tests */

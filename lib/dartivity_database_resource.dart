@@ -36,7 +36,7 @@ class DartivityResource {
   DartivityResource.fromIotivity(DartivityIotivityResource resource,
       String clientId) {
     // Get the id as a hash from the client id and the device id
-    String tmp = clientId + resource.identifier;
+    String tmp = clientId + resource.id;
     var hasher = new MD5();
     hasher.add(tmp.codeUnits);
     _id = CryptoUtils.bytesToHex(hasher.close());
@@ -48,7 +48,10 @@ class DartivityResource {
 
   /// fromDBRecord
   /// Creates a resource from a database record
-  DartivityResource.fromDbRecord(json.JsonObject record) {}
+  DartivityResource.fromDbRecord(json.JsonObject record) {
+
+
+  }
 
   /// toString
   String toString() {
