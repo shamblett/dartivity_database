@@ -10,6 +10,7 @@ main() {
   DartivityIotivityResource iotivityResource2;
   DartivityResource dartivityResource1;
   DartivityResource dartivityResource2;
+  String savedRev;
 
   /* Group 1 - DartivityIotivityResource tests */
   group("1. Dartivity Iotivity Resource - ", () {
@@ -137,6 +138,14 @@ main() {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
       expect(res.revision, isNotNull);
+      savedRev = res.revision;
+    });
+
+    test("Get Resource ", () async {
+      DartivityResource res = await db.get(dartivityResource1.id);
+      expect(res, isNotNull);
+      expect(res.revision == savedRev, true);
+      expect(res.id == dartivityResource1.id, true);
     });
 
   });
