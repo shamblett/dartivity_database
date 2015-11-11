@@ -49,29 +49,32 @@ class DartivityResource {
   /// fromDBRecord
   /// Creates a resource from a database record
   DartivityResource.fromDbRecord(json.JsonObject record) {
-
-
+    _id = record.id;
+    revision = WiltUserUtils.getDocumentRev(record);
+    _provider = record.provider;
+    _clientId = record.clientId;
+    _resource = new DartivityIotivityResource.fromJsonObject(record.resource);
   }
 
   /// toString
   String toString() {
-    return "Id : ${id}, Provider : ${provider.toString()}";
+    return "Id : ${id}, Provider : ${provider}";
   }
 
   /// equals ovverride
   bool operator ==(DartivityResource other) {
     bool state = false;
-    this.id == other.id ? state = true : null;
-    return state;
+    return this.id == other.id ? state = true : null;
   }
 
   /// toJsonObject
   json.JsonObject toJsonObject() {
-    json.JsonObject ret;
+    json.JsonObject ret = new json.JsonObject();
 
     ret.id = id;
     ret.provider = provider;
     ret.revision = revision;
+    ret.clientId = clientId;
     ret.resource = resource.toJsonObject();
     return ret;
   }

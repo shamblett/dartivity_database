@@ -85,6 +85,26 @@ main() {
       expect(dartivityResource1.revision, null);
       expect(dartivityResource1.resource, iotivityResource1);
     });
+
+    test("To String - ", () {
+      expect(dartivityResource1.toString(),
+          'Id : 6ad1b60d34a3882a331376add8999ecd, Provider : iotivity');
+    });
+
+    test("Equality - ", () {
+      expect(dartivityResource1 == dartivityResource2, false);
+    });
+
+    test("To JsonObject", () {
+      json.JsonObject jsonobj = dartivityResource1.toJsonObject();
+      expect(jsonobj.id, '6ad1b60d34a3882a331376add8999ecd');
+      expect(jsonobj.provider, 'iotivity');
+      expect(jsonobj.clientId, cfg.clientId);
+      expect(jsonobj.revision, null);
+      DartivityIotivityResource tmp = new DartivityIotivityResource
+          .fromJsonObject(jsonobj.resource);
+      expect(tmp == iotivityResource1, true);
+    });
   });
 
   /* Group 3 - DartivityResourceDatabase tests */
@@ -98,5 +118,26 @@ main() {
             "WiltException: Bad construction - some or all required parameters are null");
       }
     });
+
+    DartivityResourceDatabase db = new DartivityResourceDatabase(
+        cfg.hostname, cfg.user, cfg.password);
+
+    test("Initialised ", () {
+      expect(db.initialised, true);
+    });
+
+    test("Put Resource - initial", () async {
+      DartivityResource res = await db.put(dartivityResource1);
+      expect(res, isNotNull);
+      expect(res.revision, isNotNull);
+      dartivityResource1 = res;
+    });
+
+    test("Put Resource - subsequent", () async {
+      DartivityResource res = await db.put(dartivityResource1);
+      expect(res, isNotNull);
+      expect(res.revision, isNotNull);
+    });
+
   });
 }

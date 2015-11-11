@@ -11,7 +11,10 @@ class _DartivityDatabase {
   /// Wilt
   WiltServerClient _wilt;
 
-  /// Database name
+  /// Initialised
+  bool _initialised = false;
+
+  bool get initialised => _initialised;
 
   /// Always the default port and HTTP.
   _DartivityDatabase(String hostname, String dbName,
@@ -21,6 +24,8 @@ class _DartivityDatabase {
 
     if ((username != null) && (password != null)) _wilt.login(
         username, password);
+
+    _initialised = true;
   }
 
   /// login
@@ -33,6 +38,7 @@ class _DartivityDatabase {
   /// null on error.
   Future<json.JsonObject> put(String key, json.JsonObject record,
       [String rev = null]) async {
+    if (!_initialised) return null;
     Completer completer = new Completer();
     var res = await _wilt.putDocument(key, record, rev);
     if (!res.error) {
@@ -47,6 +53,7 @@ class _DartivityDatabase {
   /// Returns a json object.
   /// Null indicates the operation has failed for whatever reason.
   Future<json.JsonObject> get(String key, [String rev = null]) async {
+    if (!_initialised) return null;
     Completer completer = new Completer();
     var res = await _wilt.getDocument(key, rev);
     if (!res.error) {
@@ -66,6 +73,7 @@ class _DartivityDatabase {
   /// False indicates the delete operation has failed, note
   /// a revision must be supplied.
   Future<bool> delete(String key, String rev) async {
+    if (!_initialised) return false;
     Completer completer = new Completer();
     var res = await _wilt.deleteDocument(key, rev);
     if (!res.error) {
@@ -84,6 +92,7 @@ class _DartivityDatabase {
   /// putMany
   /// Puts many records as a bulk insert/update
   Future<json.JsonObject> putMany(List<json.JsonObject> records) async {
+    if (!_initialised) return null;
     Completer completer = new Completer();
     var res = await _wilt.bulk(records);
     if (!res.error) {
@@ -102,6 +111,7 @@ class _DartivityDatabase {
   String endKey: null,
   List<String> keys: null,
   bool descending: false}) async {
+    if (!_initialised) return null;
     Completer completer = new Completer();
     var res = await _wilt.getAllDocs(
         includeDocs: includeDocs,

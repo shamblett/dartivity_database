@@ -12,6 +12,9 @@ class DartivityResourceDatabase {
   _DartivityDatabase _db;
   final String dbName = 'resource';
 
+  /// Initialised
+  bool get initialised => _db.initialised;
+
   DartivityResourceDatabase(String hostname,
       [String username = null, String password = null]) {
     _db = new _DartivityDatabase(hostname, dbName, "5984", "http://");
@@ -43,10 +46,15 @@ class DartivityResourceDatabase {
   /// Null indicates the put failed.
   Future<DartivityResource> put(DartivityResource resource) async {
     Completer completer = new Completer();
-    json.JsonObject res = await _db.put(
-        resource.id, resource.toJsonObject(), resource.revision);
+    json.JsonObject res =
+    await _db.put(resource.id, resource.toJsonObject(), resource.revision);
     if (res != null) {
-      completer.complete(new DartivityResource.fromDbRecord(res));
+      if (res.ok) {
+        resource.revision = res.rev;
+        completer.complete(resource);
+      } else {
+        completer.complete(null);
+      }
     } else {
       completer.complete(null);
     }

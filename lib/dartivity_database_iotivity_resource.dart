@@ -52,6 +52,15 @@ class DartivityIotivityResource {
     _interfaceTypes = intTypes;
   }
 
+  DartivityIotivityResource.fromJsonObject(json.JsonObject record) {
+    _id = record.id;
+    _uri = record.uri;
+    _host = record.host;
+    _observable = record.observable;
+    _resourceTypes = record.resourceTypes;
+    _interfaceTypes = record.interfaceTypes;
+  }
+
   /// toString
   String toString() {
     return _id;
