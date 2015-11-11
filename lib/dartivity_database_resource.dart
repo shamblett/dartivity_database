@@ -31,6 +31,9 @@ class DartivityResource {
 
   dynamic get resource => _resource;
 
+  /// Lat updated
+  DateTime updated;
+
   /// fromIotivity
   /// Creates a resource from an Iotivity resource
   DartivityResource.fromIotivity(DartivityIotivityResource resource,
@@ -44,6 +47,7 @@ class DartivityResource {
     _clientId = clientId;
     _provider = resource.provider;
     _resource = resource;
+    updated = new DateTime.now();
   }
 
   /// fromDBRecord
@@ -54,6 +58,7 @@ class DartivityResource {
     _provider = record.provider;
     _clientId = record.clientId;
     _resource = new DartivityIotivityResource.fromJsonObject(record.resource);
+    updated = new DateTime.fromMillisecondsSinceEpoch(record.updated);
   }
 
   /// toString
@@ -76,6 +81,7 @@ class DartivityResource {
     ret.revision = revision;
     ret.clientId = clientId;
     ret.resource = resource.toJsonObject();
+    ret.updated = updated.millisecondsSinceEpoch;
     return ret;
   }
 }

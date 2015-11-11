@@ -11,6 +11,7 @@ main() {
   DartivityResource dartivityResource1;
   DartivityResource dartivityResource2;
   String savedRev;
+  DateTime dartivityResource1Updated;
 
   /* Group 1 - DartivityIotivityResource tests */
   group("1. Dartivity Iotivity Resource - ", () {
@@ -78,6 +79,7 @@ main() {
   /* Group 2 - DartivityResource tests */
   group("2. Dartivity Resource - ", () {
     test("Construction - from Iotivity", () {
+
       dartivityResource1 =
       new DartivityResource.fromIotivity(iotivityResource1, cfg.clientId);
       expect(dartivityResource1.id, '6ad1b60d34a3882a331376add8999ecd');
@@ -85,6 +87,9 @@ main() {
       expect(dartivityResource1.provider, 'iotivity');
       expect(dartivityResource1.revision, null);
       expect(dartivityResource1.resource, iotivityResource1);
+      expect(dartivityResource1.updated, isNotNull);
+      dartivityResource1Updated = dartivityResource1.updated;
+
     });
 
     test("To String - ", () {
@@ -102,6 +107,9 @@ main() {
       expect(jsonobj.provider, 'iotivity');
       expect(jsonobj.clientId, cfg.clientId);
       expect(jsonobj.revision, null);
+      expect(
+          jsonobj.updated == dartivityResource1Updated.millisecondsSinceEpoch,
+          true);
       DartivityIotivityResource tmp = new DartivityIotivityResource
           .fromJsonObject(jsonobj.resource);
       expect(tmp == iotivityResource1, true);
@@ -131,6 +139,7 @@ main() {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
       expect(res.revision, isNotNull);
+      expect(res.updated != dartivityResource1Updated, true);
       dartivityResource1 = res;
     });
 
@@ -138,7 +147,9 @@ main() {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
       expect(res.revision, isNotNull);
+      expect(res.updated != dartivityResource1Updated, true);
       savedRev = res.revision;
+      dartivityResource1Updated = res.updated;
     });
 
     test("Get Resource ", () async {
@@ -146,6 +157,7 @@ main() {
       expect(res, isNotNull);
       expect(res.revision == savedRev, true);
       expect(res.id == dartivityResource1.id, true);
+      expect(res.updated == dartivityResource1Updated, true);
     });
 
   });

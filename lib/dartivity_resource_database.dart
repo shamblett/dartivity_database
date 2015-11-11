@@ -46,6 +46,7 @@ class DartivityResourceDatabase {
   /// Null indicates the put failed.
   Future<DartivityResource> put(DartivityResource resource) async {
     Completer completer = new Completer();
+    resource.updated = new DateTime.now();
     json.JsonObject res =
     await _db.put(resource.id, resource.toJsonObject(), resource.revision);
     if (res != null) {
