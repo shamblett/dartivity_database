@@ -160,5 +160,10 @@ main() {
       expect(res.updated == dartivityResource1Updated, true);
     });
 
+    test(" Delete Resource ", () async {
+      bool res = await db.delete(dartivityResource1);
+      expect(res, true);
+    });
+
   });
 }

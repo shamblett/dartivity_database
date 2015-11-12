@@ -61,4 +61,10 @@ class DartivityResourceDatabase {
     }
     return completer.future;
   }
+
+  /// delete
+  /// Returns true if sucessful
+  Future<bool> delete(DartivityResource resource) async {
+    return await _db.delete(resource.id, resource.revision);
+  }
 }
