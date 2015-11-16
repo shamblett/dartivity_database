@@ -25,10 +25,16 @@ class DartivityCache {
   }
 
   /// put
-  put(String key, dynamic resource) {
+  void put(String key, dynamic resource) {
     _cache[key] = resource;
   }
 
+  /// delete
+  void delete(String key) {
+    if (_cache.containsKey(key)) {
+      _cache.remove(key);
+    }
+  }
   /// clear
   void clear() {
     _cache.clear();
