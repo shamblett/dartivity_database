@@ -35,8 +35,14 @@ class DartivityCache {
       _cache.remove(key);
     }
   }
+
   /// clear
   void clear() {
     _cache.clear();
+  }
+
+  /// all
+  Map<String, dynamic> all() {
+    return _cache;
   }
 }

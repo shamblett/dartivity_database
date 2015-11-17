@@ -85,7 +85,6 @@ main() {
       expect(dartivityResource1.id, '6ad1b60d34a3882a331376add8999ecd');
       expect(dartivityResource1.clientId, cfg.clientId);
       expect(dartivityResource1.provider, 'iotivity');
-      expect(dartivityResource1.revision, null);
       expect(dartivityResource1.resource, iotivityResource1);
       expect(dartivityResource1.updated, isNotNull);
       dartivityResource1Updated = dartivityResource1.updated;
@@ -106,7 +105,6 @@ main() {
       expect(jsonobj.id, '6ad1b60d34a3882a331376add8999ecd');
       expect(jsonobj.provider, 'iotivity');
       expect(jsonobj.clientId, cfg.clientId);
-      expect(jsonobj.revision, null);
       expect(
           jsonobj.updated == dartivityResource1Updated.millisecondsSinceEpoch,
           true);
@@ -138,7 +136,6 @@ main() {
     test("Put Resource - initial", () async {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
-      expect(res.revision, isNotNull);
       expect(res.updated != dartivityResource1Updated, true);
       dartivityResource1 = res;
     });
@@ -146,21 +143,18 @@ main() {
     test("Put Resource - subsequent", () async {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
-      expect(res.revision, isNotNull);
       expect(res.updated != dartivityResource1Updated, true);
-      savedRev = res.revision;
       dartivityResource1Updated = res.updated;
     });
 
     test("Get Resource ", () async {
       DartivityResource res = await db.get(dartivityResource1.id);
       expect(res, isNotNull);
-      expect(res.revision == savedRev, true);
       expect(res.id == dartivityResource1.id, true);
       expect(res.updated == dartivityResource1Updated, true);
     });
 
-    test(" Delete Resource ", () async {
+    test("Delete Resource ", () async {
       bool res = await db.delete(dartivityResource1);
       expect(res, true);
     });

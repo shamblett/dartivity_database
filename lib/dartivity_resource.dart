@@ -18,9 +18,6 @@ class DartivityResource {
 
   String get provider => _provider;
 
-  /// Database revision
-  String revision;
-
   /// Dartivity client id
   String _clientId;
 
@@ -54,7 +51,6 @@ class DartivityResource {
   /// Creates a resource from a database record
   DartivityResource.fromDbRecord(json.JsonObject record) {
     _id = record.id;
-    revision = WiltUserUtils.getDocumentRev(record);
     _provider = record.provider;
     _clientId = record.clientId;
     _resource = new DartivityIotivityResource.fromJsonObject(record.resource);
@@ -78,7 +74,6 @@ class DartivityResource {
 
     ret.id = id;
     ret.provider = provider;
-    ret.revision = revision;
     ret.clientId = clientId;
     ret.resource = resource.toJsonObject();
     ret.updated = updated.millisecondsSinceEpoch;

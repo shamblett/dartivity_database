@@ -18,6 +18,7 @@ part 'dartivity_resource_database.dart';
 
 part 'dartivity_iotivity_resource.dart';
 
+part 'dartivity_cache.dart';
 part 'dartivity_resource.dart';
 part 'src/dartivity_database.dart';
 
