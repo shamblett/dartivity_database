@@ -56,6 +56,9 @@ class DartivityResourceDatabase {
     Completer completer = new Completer();
     resource.updated = new DateTime.now();
     String rev = _revision.get(resource.id);
+    if (rev == null) {
+      rev = await sync(resource.id);
+    }
     json.JsonObject res =
     await _db.put(resource.id, resource.toJsonObject(), rev);
     if (res != null) {
@@ -76,5 +79,20 @@ class DartivityResourceDatabase {
   Future<bool> delete(DartivityResource resource) async {
     String rev = _revision.get(resource.id);
     return await _db.delete(resource.id, rev);
+  }
+
+  /// sync
+  /// Syncs the revision cache with the latest revision of a document
+  /// from the database.
+  Future<String> sync(String key) async {
+    Completer completer = new Completer();
+    String revision = await _db.getRevision(key);
+    if (revision != null) {
+      _revision.put(key, revision);
+      completer.complete(revision);
+    } else {
+      completer.complete(null);
+    }
+    return completer.future;
   }
 }

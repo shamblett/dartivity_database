@@ -127,4 +127,22 @@ class _DartivityDatabase {
     }
     return completer.future;
   }
+
+  /// getRevision
+  // Gets the latest revision of a database record
+  Future<String> getRevision(String key) async {
+    if (!_initialised) return null;
+    Completer completer = new Completer();
+
+    String url = key;
+    json.JsonObject res = await _wilt.head(url);
+    json.JsonObject headers = new json.JsonObject.fromMap(
+        res.allResponseHeaders);
+    if (headers.containsKey('etag')) {
+      completer.complete(headers.etag);
+    } else {
+      completer.complete(null);
+    }
+    return completer.future;
+  }
 }
