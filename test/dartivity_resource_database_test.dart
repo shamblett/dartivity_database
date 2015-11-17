@@ -159,5 +159,29 @@ main() {
       expect(res, true);
     });
 
+    test("Get all Resources ", () async {
+      DartivityResource res1 = await db.put(dartivityResource1);
+      expect(res1, isNotNull);
+      iotivityResource2 = new DartivityIotivityResource(
+          '/sample/simulator/switch/2',
+          '/sample/simulator/switch/2',
+          'localhost',
+          ['res1', 'res2'],
+          ['int1', 'int2'],
+          true);
+      dartivityResource2 =
+      new DartivityResource.fromIotivity(iotivityResource2, cfg.clientId);
+      DartivityResource res2 = await db.put(dartivityResource2);
+      expect(res2, isNotNull);
+      Map<String, DartivityResource> resAll = await db.all();
+      expect(resAll, isNotNull);
+      expect(resAll.containsKey(res1.id), true);
+      expect(resAll.containsKey(res2.id), true);
+      bool res = await db.delete(dartivityResource1);
+      expect(res, true);
+      res = await db.delete(dartivityResource2);
+      expect(res, true);
+    });
+
   });
 }

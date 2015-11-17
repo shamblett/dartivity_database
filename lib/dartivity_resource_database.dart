@@ -75,10 +75,42 @@ class DartivityResourceDatabase {
   }
 
   /// delete
-  /// Returns true if sucessful
+  /// Returns true if successful
   Future<bool> delete(DartivityResource resource) async {
+    Completer completer = new Completer();
     String rev = _revision.get(resource.id);
-    return await _db.delete(resource.id, rev);
+    if (rev == null) {
+      rev = await sync(resource.id);
+    }
+    bool res = await _db.delete(resource.id, rev);
+    if (res) {
+      _revision.delete(resource.id);
+      completer.complete(true);
+    } else {
+      completer.complete(false);
+    }
+    return completer.future;
+  }
+
+  /// all
+  /// Gets all the resources in the resource database.
+  Future<Map<String, DartivityResource>> all() async {
+    Completer completer = new Completer();
+    json.JsonObject resList = await _db.getAll(includeDocs: true);
+    if (resList != null) {
+      List rows = resList.rows;
+      Map<String, DartivityResource> ret = new Map<String, DartivityResource>();
+      rows.forEach((row) {
+        DartivityResource res = new DartivityResource.fromDbRecord(row.doc);
+        ret[res.id] = res;
+        _revision.put(res.id, WiltUserUtils.getDocumentRev(row));
+      });
+      completer.complete(ret);
+    } else {
+      completer.complete(null);
+    }
+
+    return completer.future;
   }
 
   /// sync
