@@ -139,7 +139,9 @@ class _DartivityDatabase {
     json.JsonObject headers = new json.JsonObject.fromMap(
         res.allResponseHeaders);
     if (headers.containsKey('etag')) {
-      completer.complete(headers.etag);
+      String ver = headers.etag;
+      ver = ver.substring(1, ver.length - 1);
+      completer.complete(ver);
     } else {
       completer.complete(null);
     }
