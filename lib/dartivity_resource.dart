@@ -65,7 +65,7 @@ class DartivityResource {
   /// equals ovverride
   bool operator ==(DartivityResource other) {
     bool state = false;
-    return this.id == other.id ? state = true : null;
+    return this.id == other.id ? state = true : state;
   }
 
   /// toJsonObject

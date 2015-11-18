@@ -177,6 +177,7 @@ main() {
       expect(resAll, isNotNull);
       expect(resAll.containsKey(res1.id), true);
       expect(resAll.containsKey(res2.id), true);
+      expect(resAll[res1.id] != resAll[res2.id], true);
       bool res = await db.delete(dartivityResource1);
       expect(res, true);
       res = await db.delete(dartivityResource2);
