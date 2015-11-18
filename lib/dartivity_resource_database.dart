@@ -9,7 +9,7 @@ part of dartivity_database;
 
 class DartivityResourceDatabase {
   /// Database
-  _DartivityDatabase _db;
+  var _db;
   final String dbName = 'resource';
 
   /// Revision cache
@@ -20,7 +20,7 @@ class DartivityResourceDatabase {
 
   DartivityResourceDatabase(String hostname,
       [String username = null, String password = null]) {
-    _db = new _DartivityDatabase(hostname, dbName, "5984", "http://");
+    _db = new _DartivityDatabaseCouchDB(hostname, dbName, "5984", "http://");
 
     if ((username != null) && (password != null)) _db.login(username, password);
 

@@ -20,7 +20,8 @@ part 'dartivity_iotivity_resource.dart';
 
 part 'dartivity_cache.dart';
 part 'dartivity_resource.dart';
-part 'src/dartivity_database.dart';
+
+part 'src/dartivity_database_couchdb.dart';
 
 /// Library globals
 

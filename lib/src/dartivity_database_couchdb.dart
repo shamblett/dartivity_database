@@ -7,7 +7,7 @@
 
 part of dartivity_database;
 
-class _DartivityDatabase {
+class _DartivityDatabaseCouchDB {
   /// Wilt
   WiltServerClient _wilt;
 
@@ -17,7 +17,7 @@ class _DartivityDatabase {
   bool get initialised => _initialised;
 
   /// Always the default port and HTTP.
-  _DartivityDatabase(String hostname, String dbName,
+  _DartivityDatabaseCouchDB(String hostname, String dbName,
       [String username = null, String password = null]) {
     _wilt = new WiltServerClient(hostname, "5984", "http://");
     _wilt.db = dbName;
