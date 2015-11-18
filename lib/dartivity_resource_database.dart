@@ -113,6 +113,34 @@ class DartivityResourceDatabase {
     return completer.future;
   }
 
+  /// putMany
+  /// Bulk insert of resources, note if one resource fails to
+  /// create/update it does not stop the rest of the update being
+  /// tried.
+  Future<List<DartivityResource>> putMany(
+      List<DartivityResource> resList) async {
+    Completer completer = new Completer();
+    Map<String, json.JsonObject> resMap = new Map<String, json.JsonObject>();
+    resList.forEach((resource) async {
+      resource.updated = new DateTime.now().millisecondsSinceEpoch;
+      String rev = _revision.get(resource.id);
+      if (rev == null) {
+        rev = await sync(resource.id);
+      }
+      String key = rev == null ? "norev" : rev;
+      resMap[key] = resource.toJsonObject();
+      List<json.JsonObject> jsonRes = await _db.putMany(resMap);
+      if (jsonRes != null) {
+
+
+      } else {
+        completer.complete(null);
+      }
+    });
+    return completer.future;
+  }
+
+
   /// sync
   /// Syncs the revision cache with the latest revision of a document
   /// from the database.

@@ -91,7 +91,8 @@ class _DartivityDatabaseCouchDB {
 
   /// putMany
   /// Puts many records as a bulk insert/update
-  Future<json.JsonObject> putMany(List<json.JsonObject> records) async {
+  Future<List<json.JsonObject>> putMany(
+      Map<String, json.JsonObject> records) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
     var res = await _wilt.bulk(records);
