@@ -8,8 +8,10 @@ import 'dartivity_database_test_cfg.dart' as cfg;
 main() {
   DartivityIotivityResource iotivityResource1;
   DartivityIotivityResource iotivityResource2;
+  DartivityIotivityResource iotivityResource3;
   DartivityResource dartivityResource1;
   DartivityResource dartivityResource2;
+  DartivityResource dartivityResource3;
   String savedRev;
   DateTime dartivityResource1Updated;
 
@@ -79,7 +81,6 @@ main() {
   /* Group 2 - DartivityResource tests */
   group("2. Dartivity Resource - ", () {
     test("Construction - from Iotivity", () {
-
       dartivityResource1 =
       new DartivityResource.fromIotivity(iotivityResource1, cfg.clientId);
       expect(dartivityResource1.id, '6ad1b60d34a3882a331376add8999ecd');
@@ -88,7 +89,6 @@ main() {
       expect(dartivityResource1.resource, iotivityResource1);
       expect(dartivityResource1.updated, isNotNull);
       dartivityResource1Updated = dartivityResource1.updated;
-
     });
 
     test("To String - ", () {
@@ -108,8 +108,8 @@ main() {
       expect(
           jsonobj.updated == dartivityResource1Updated.millisecondsSinceEpoch,
           true);
-      DartivityIotivityResource tmp = new DartivityIotivityResource
-          .fromJsonObject(jsonobj.resource);
+      DartivityIotivityResource tmp =
+      new DartivityIotivityResource.fromJsonObject(jsonobj.resource);
       expect(tmp == iotivityResource1, true);
     });
   });
@@ -126,8 +126,8 @@ main() {
       }
     });
 
-    DartivityResourceDatabase db = new DartivityResourceDatabase(
-        cfg.hostname, cfg.user, cfg.password);
+    DartivityResourceDatabase db =
+    new DartivityResourceDatabase(cfg.hostname, cfg.user, cfg.password);
 
     test("Initialised ", () {
       expect(db.initialised, true);
@@ -183,6 +183,39 @@ main() {
       res = await db.delete(dartivityResource2);
       expect(res, true);
     });
+
+    test("Bulk Insert - Create", () async {
+      iotivityResource3 = new DartivityIotivityResource(
+          '/sample/simulator/light/3',
+          '/sample/simulator/light/3',
+          'localhost',
+          ['res1', 'res2'],
+          ['int1', 'int2'],
+          true);
+      dartivityResource3 =
+      new DartivityResource.fromIotivity(iotivityResource3, cfg.clientId);
+      List<DartivityResource> resList = [
+        dartivityResource1,
+        dartivityResource2,
+        dartivityResource3
+      ];
+
+      List res = await db.putMany(resList);
+      expect(res, isNotNull);
+    });
+
+    /*test("Bulk Insert - Update", () async {
+      List<DartivityResource> resList = [
+        dartivityResource1,
+        dartivityResource2,
+        dartivityResource3
+      ];
+
+      List res = await db.putMany(resList);
+      expect(res, isNotNull);
+
+    });*/
+
 
   });
 }

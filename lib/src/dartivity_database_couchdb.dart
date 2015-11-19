@@ -91,13 +91,31 @@ class _DartivityDatabaseCouchDB {
 
   /// putMany
   /// Puts many records as a bulk insert/update
-  Future<List<json.JsonObject>> putMany(
+  Future<Map<String, json.JsonObject>> putMany(
       Map<String, json.JsonObject> records) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
-    var res = await _wilt.bulk(records);
+    records.forEach((String key, json.JsonObject res) {
+      WiltUserUtils.addDocumentId(res, res.id);
+      if (key != 'norev')
+        WiltUserUtils.addDocumentRev(res, key);
+    });
+    List<String> docString = new List<String>();
+    records.values.forEach((val) {
+      docString.add(val.toString());
+    });
+    String bulk = WiltUserUtils.createBulkInsertString(docString);
+    var res = await _wilt.bulkString(bulk);
     if (!res.error) {
-      completer.complete(res.jsonCouchResponse);
+      json.JsonObject response = res.jsonCouchResponse;
+      Map<String, json.JsonObject> retMap = new Map<String, json.JsonObject>();
+      response.forEach((resp) {
+        String rev = WiltUserUtils.getDocumentRev(resp);
+        if (resp != null) {
+          retMap[rev] = resp;
+        }
+      });
+      completer.complete(retMap);
     } else {
       completer.complete(false);
     }
@@ -137,8 +155,8 @@ class _DartivityDatabaseCouchDB {
 
     String url = key;
     json.JsonObject res = await _wilt.head(url);
-    json.JsonObject headers = new json.JsonObject.fromMap(
-        res.allResponseHeaders);
+    json.JsonObject headers =
+    new json.JsonObject.fromMap(res.allResponseHeaders);
     if (headers.containsKey('etag')) {
       String ver = headers.etag;
       ver = ver.substring(1, ver.length - 1);
