@@ -23,6 +23,8 @@ part 'dartivity_resource.dart';
 
 part 'src/dartivity_database_couchdb.dart';
 
+part 'src/dartivity_database.dart';
+
 /// Library globals
 
 /// Providers

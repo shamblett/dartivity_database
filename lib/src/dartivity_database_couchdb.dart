@@ -7,7 +7,7 @@
 
 part of dartivity_database;
 
-class _DartivityDatabaseCouchDB {
+class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// Wilt
   WiltServerClient _wilt;
 
@@ -125,9 +125,9 @@ class _DartivityDatabaseCouchDB {
     return completer.future;
   }
 
-  /// getAll
+  /// all
   /// Gets all records in the input parameter set
-  Future<json.JsonObject> getAll({bool includeDocs: false,
+  Future<json.JsonObject> all({bool includeDocs: false,
   int limit: null,
   String startKey: null,
   String endKey: null,
