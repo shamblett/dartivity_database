@@ -204,7 +204,7 @@ main() {
       expect(res, isNotNull);
     });
 
-    /*test("Bulk Insert - Update", () async {
+    test("Bulk Insert - Update", () async {
       List<DartivityResource> resList = [
         dartivityResource1,
         dartivityResource2,
@@ -214,7 +214,18 @@ main() {
       List res = await db.putMany(resList);
       expect(res, isNotNull);
 
-    });*/
+      // Check we have correct revs returned
+      DartivityResource res1 = await db.put(dartivityResource1);
+      expect(res1, isNotNull);
+
+      // Delete the resources
+      bool res3 = await db.delete(dartivityResource1);
+      expect(res3, true);
+      res3 = await db.delete(dartivityResource2);
+      expect(res3, true);
+      res3 = await db.delete(dartivityResource3);
+      expect(res3, true);
+    });
 
 
   });

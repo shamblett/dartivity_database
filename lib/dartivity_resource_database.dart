@@ -120,8 +120,7 @@ class DartivityResourceDatabase {
   Future<List<DartivityResource>> putMany(
       List<DartivityResource> resList) async {
     Completer completer = new Completer();
-    Map<String, json.JsonObject> resMap = new Map<String, json.JsonObject>();
-    resList.forEach((resource) async {
+    Map<String, json.JsonObject> resMap = new Map<String, json.JsonObject>(); /*resList.forEach((resource) async {
       resource.updated = new DateTime.now();
       String rev = _revision.get(resource.id);
       if (rev == null) {
@@ -129,16 +128,33 @@ class DartivityResourceDatabase {
       }
       String key = rev == null ? "norev" : rev;
       resMap[key] = resource.toJsonObject();
+    });*/
+    List<Future> futList = new List<Future>();
+    for (DartivityResource resource in resList) {
+      resource.updated = new DateTime.now();
+      String rev = _revision.get(resource.id);
+      if (rev == null) {
+        futList.add(sync(resource.id).then((String rev) {
+          String key = rev == null ? "norev" + resource.id : rev;
+          resMap[key] = resource.toJsonObject();
+        }));
+      } else {
+        String key = rev;
+        resMap[key] = resource.toJsonObject();
+      }
+    };
+
+    Future.wait(futList).then((_) async {
+      Map<String, json.JsonObject> jsonRes = await _db.putMany(resMap);
+      if (jsonRes != null) {
+        jsonRes.forEach((String key, json.JsonObject res) {
+          _revision.put(res.id, key);
+        });
+        completer.complete(resList);
+      } else {
+        completer.complete(null);
+      }
     });
-    Map<String, json.JsonObject> jsonRes = await _db.putMany(resMap);
-    if (jsonRes != null) {
-      jsonRes.forEach((String key, json.JsonObject res) {
-        _revision.put(res.id, key);
-      });
-      completer.complete(resList);
-    } else {
-      completer.complete(null);
-    }
 
     return completer.future;
   }

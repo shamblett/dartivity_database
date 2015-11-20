@@ -94,14 +94,17 @@ class _DartivityDatabaseCouchDB {
   Future<Map<String, json.JsonObject>> putMany(
       Map<String, json.JsonObject> records) async {
     if (!_initialised) return null;
+    List<json.JsonObject> resList = new List<json.JsonObject>();
     Completer completer = new Completer();
     records.forEach((String key, json.JsonObject res) {
-      WiltUserUtils.addDocumentId(res, res.id);
-      if (key != 'norev')
-        WiltUserUtils.addDocumentRev(res, key);
+      json.JsonObject tmp = new json.JsonObject.fromJsonString(
+          WiltUserUtils.addDocumentId(res, res.id));
+      if (!key.contains('norev')) tmp = new json.JsonObject.fromJsonString(
+          WiltUserUtils.addDocumentRev(tmp, key));
+      resList.add(tmp);
     });
     List<String> docString = new List<String>();
-    records.values.forEach((val) {
+    resList.forEach((val) {
       docString.add(val.toString());
     });
     String bulk = WiltUserUtils.createBulkInsertString(docString);
@@ -110,9 +113,9 @@ class _DartivityDatabaseCouchDB {
       json.JsonObject response = res.jsonCouchResponse;
       Map<String, json.JsonObject> retMap = new Map<String, json.JsonObject>();
       response.forEach((resp) {
-        String rev = WiltUserUtils.getDocumentRev(resp);
         if (resp != null) {
-          retMap[rev] = resp;
+          if (resp.containsKey('rev'))
+            retMap[resp.rev] = resp;
         }
       });
       completer.complete(retMap);
