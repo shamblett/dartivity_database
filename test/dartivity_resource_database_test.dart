@@ -225,12 +225,12 @@ main() {
       expect(res1, isNotNull);
 
       // Delete the resources
-      /*bool res3 = await db.delete(dartivityResource1);
+      bool res3 = await db.delete(dartivityResource1);
       expect(res3, true);
       res3 = await db.delete(dartivityResource2);
       expect(res3, true);
       res3 = await db.delete(dartivityResource3);
-      expect(res3, true);*/
+      expect(res3, true);
     });
 
 
