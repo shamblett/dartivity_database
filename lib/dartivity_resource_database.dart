@@ -12,9 +12,6 @@ class DartivityResourceDatabase {
   var _db;
   final String dbName = 'resource';
 
-  /// Revision cache
-  DartivityCache _revision;
-
   /// Initialised
   bool get initialised => _db.initialised;
 
@@ -23,8 +20,6 @@ class DartivityResourceDatabase {
     _db = new _DartivityDatabaseCouchDB(hostname, dbName, "5984", "http://");
 
     if ((username != null) && (password != null)) _db.login(username, password);
-
-    _revision = new DartivityCache();
   }
 
   /// login
@@ -42,8 +37,6 @@ class DartivityResourceDatabase {
       completer.complete(null);
     } else {
       DartivityResource res = new DartivityResource.fromDbRecord(record);
-      String rev = WiltUserUtils.getDocumentRev(record);
-      _revision.put(res.id, rev);
       completer.complete(res);
     }
     return completer.future;
@@ -55,15 +48,9 @@ class DartivityResourceDatabase {
   Future<DartivityResource> put(DartivityResource resource) async {
     Completer completer = new Completer();
     resource.updated = new DateTime.now();
-    String rev = _revision.get(resource.id);
-    if (rev == null) {
-      rev = await sync(resource.id);
-    }
-    json.JsonObject res =
-    await _db.put(resource.id, resource.toJsonObject(), rev);
+    json.JsonObject res = await _db.put(resource.id, resource.toJsonObject());
     if (res != null) {
       if (res.ok) {
-        _revision.put(res.id, res.rev);
         completer.complete(resource);
       } else {
         completer.complete(null);
@@ -78,13 +65,8 @@ class DartivityResourceDatabase {
   /// Returns true if successful
   Future<bool> delete(DartivityResource resource) async {
     Completer completer = new Completer();
-    String rev = _revision.get(resource.id);
-    if (rev == null) {
-      rev = await sync(resource.id);
-    }
-    bool res = await _db.delete(resource.id, rev);
+    bool res = await _db.delete(resource.id);
     if (res) {
-      _revision.delete(resource.id);
       completer.complete(true);
     } else {
       completer.complete(false);
@@ -96,14 +78,13 @@ class DartivityResourceDatabase {
   /// Gets all the resources in the resource database.
   Future<Map<String, DartivityResource>> all() async {
     Completer completer = new Completer();
-    json.JsonObject resList = await _db.getAll(includeDocs: true);
+    json.JsonObject resList = await _db.all();
     if (resList != null) {
       List rows = resList.rows;
       Map<String, DartivityResource> ret = new Map<String, DartivityResource>();
       rows.forEach((row) {
         DartivityResource res = new DartivityResource.fromDbRecord(row.doc);
         ret[res.id] = res;
-        _revision.put(res.id, WiltUserUtils.getDocumentRev(row));
       });
       completer.complete(ret);
     } else {
@@ -114,63 +95,27 @@ class DartivityResourceDatabase {
   }
 
   /// putMany
-  /// Bulk insert of resources, note if one resource fails to
-  /// create/update it does not stop the rest of the update being
-  /// tried.
+  /// Bulk insert of resources, a list of actual updates performed is
+  /// returned.
   Future<List<DartivityResource>> putMany(
       List<DartivityResource> resList) async {
     Completer completer = new Completer();
-    Map<String, json.JsonObject> resMap = new Map<String, json.JsonObject>(); /*resList.forEach((resource) async {
-      resource.updated = new DateTime.now();
-      String rev = _revision.get(resource.id);
-      if (rev == null) {
-        rev = await sync(resource.id);
-      }
-      String key = rev == null ? "norev" : rev;
-      resMap[key] = resource.toJsonObject();
-    });*/
-    List<Future> futList = new List<Future>();
+    List<json.JsonObject> jsonList = new List<json.JsonObject>();
     for (DartivityResource resource in resList) {
       resource.updated = new DateTime.now();
-      String rev = _revision.get(resource.id);
-      if (rev == null) {
-        futList.add(sync(resource.id).then((String rev) {
-          String key = rev == null ? "norev" + resource.id : rev;
-          resMap[key] = resource.toJsonObject();
-        }));
-      } else {
-        String key = rev;
-        resMap[key] = resource.toJsonObject();
-      }
-    };
-
-    Future.wait(futList).then((_) async {
-      Map<String, json.JsonObject> jsonRes = await _db.putMany(resMap);
-      if (jsonRes != null) {
-        jsonRes.forEach((String key, json.JsonObject res) {
-          _revision.put(res.id, key);
-        });
-        completer.complete(resList);
-      } else {
-        completer.complete(null);
-      }
-    });
-
-    return completer.future;
-  }
-
-  /// sync
-  /// Syncs the revision cache with the latest revision of a document
-  /// from the database.
-  Future<String> sync(String key) async {
-    Completer completer = new Completer();
-    String revision = await _db.getRevision(key);
-    if (revision != null) {
-      _revision.put(key, revision);
-      completer.complete(revision);
+      jsonList.add(resource.toJsonObject());
+    }
+    List<json.JsonObject> jsonRes = await _db.putMany(jsonList);
+    if (jsonRes != null) {
+      List<DartivityResource> retList = new List<DartivityResource>();
+      jsonRes.forEach((resource) {
+        retList.add(new DartivityResource.fromDbRecord(resource));
+      });
+      completer.complete(retList);
     } else {
       completer.complete(null);
     }
+
     return completer.future;
   }
 }

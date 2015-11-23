@@ -11,10 +11,16 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// Wilt
   WiltServerClient _wilt;
 
+  /// Revision cache
+  DartivityCache _revision;
+
   /// Initialised
   bool _initialised = false;
 
   bool get initialised => _initialised;
+
+  /// Etag Header
+  static const ETAG = 'etag';
 
   /// Always the default port and HTTP.
   _DartivityDatabaseCouchDB(String hostname, String dbName,
@@ -24,6 +30,8 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
 
     if ((username != null) && (password != null)) _wilt.login(
         username, password);
+
+    _revision = new DartivityCache();
 
     _initialised = true;
   }
@@ -40,9 +48,12 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
       [String rev = null]) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
+    String rev = await _getRevision(key);
     var res = await _wilt.putDocument(key, record, rev);
     if (!res.error) {
       completer.complete(res.jsonCouchResponse);
+      String rev = WiltUserUtils.getDocumentRev(res);
+      _revision.put(res.id, rev);
     } else {
       completer.complete(null);
     }
@@ -52,13 +63,15 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// get
   /// Returns a json object.
   /// Null indicates the operation has failed for whatever reason.
-  Future<json.JsonObject> get(String key, [String rev = null]) async {
+  Future<json.JsonObject> get(String key) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
-    var res = await _wilt.getDocument(key, rev);
+    var res = await _wilt.getDocument(key);
     if (!res.error) {
       json.JsonObject doc = res.jsonCouchResponse;
       if (doc.id == key) {
+        String rev = WiltUserUtils.getDocumentRev(doc);
+        _revision.put(doc.id, rev);
         completer.complete(res.jsonCouchResponse);
       } else {
         completer.complete(null);
@@ -72,14 +85,16 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// delete
   /// False indicates the delete operation has failed, note
   /// a revision must be supplied.
-  Future<bool> delete(String key, String rev) async {
+  Future<bool> delete(String key) async {
     if (!_initialised) return false;
     Completer completer = new Completer();
+    String rev = await _getRevision(key);
     var res = await _wilt.deleteDocument(key, rev);
     if (!res.error) {
       json.JsonObject doc = res.jsonCouchResponse;
       if (doc.id == key) {
         completer.complete(true);
+        _revision.delete(key);
       } else {
         completer.complete(false);
       }
@@ -91,9 +106,18 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
 
   /// putMany
   /// Puts many records as a bulk insert/update
-  Future<Map<String, json.JsonObject>> putMany(
-      Map<String, json.JsonObject> records) async {
+  Future<List<json.JsonObject>> putMany(List<json.JsonObject> records) async {
     if (!_initialised) return null;
+    String rev = _revision.get(resource.id);
+    if (rev == null) {
+      futList.add(sync(resource.id).then((String rev) {
+        String key = rev == null ? "norev" + resource.id : rev;
+        resMap[key] = resource.toJsonObject();
+      }));
+    } else {
+      String key = rev;
+      resMap[key] = resource.toJsonObject();
+    }
     List<json.JsonObject> resList = new List<json.JsonObject>();
     Completer completer = new Completer();
     records.forEach((String key, json.JsonObject res) {
@@ -114,8 +138,8 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
       Map<String, json.JsonObject> retMap = new Map<String, json.JsonObject>();
       response.forEach((resp) {
         if (resp != null) {
-          if (resp.containsKey('rev'))
-            retMap[resp.rev] = resp;
+          _revision.put(res.id, key);
+          if (resp.containsKey('rev')) retMap[resp.rev] = resp;
         }
       });
       completer.complete(retMap);
@@ -126,23 +150,15 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   }
 
   /// all
-  /// Gets all records in the input parameter set
-  Future<json.JsonObject> all({bool includeDocs: false,
-  int limit: null,
-  String startKey: null,
-  String endKey: null,
-  List<String> keys: null,
-  bool descending: false}) async {
+  /// Gets all records in the database
+  Future<json.JsonObject> all() async {
     if (!_initialised) return null;
     Completer completer = new Completer();
-    var res = await _wilt.getAllDocs(
-        includeDocs: includeDocs,
-        limit: limit,
-        startKey: startKey,
-        endKey: endKey,
-        keys: keys,
-        descending: descending);
+    var res = await _wilt.getAllDocs(includeDocs: true);
     if (!res.error) {
+      res.forEach((resource) {
+        _revision.put(resource.id, WiltUserUtils.getDocumentRev(resource));
+      });
       completer.complete(res.jsonCouchResponse);
     } else {
       completer.complete(false);
@@ -151,21 +167,27 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   }
 
   /// getRevision
-  // Gets the latest revision of a database record
-  Future<String> getRevision(String key) async {
+  /// Gets the latest revision of a database record either
+  /// from the cache or from the database itself.
+  Future<String> _getRevision(String key) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
 
-    String url = key;
-    json.JsonObject res = await _wilt.head(url);
-    json.JsonObject headers =
-    new json.JsonObject.fromMap(res.allResponseHeaders);
-    if (headers.containsKey('etag')) {
-      String ver = headers.etag;
-      ver = ver.substring(1, ver.length - 1);
-      completer.complete(ver);
+    String rev = _revision.get(key);
+    if (rev == null) {
+      String url = key;
+      json.JsonObject res = await _wilt.head(url);
+      json.JsonObject headers =
+      new json.JsonObject.fromMap(res.allResponseHeaders);
+      if (headers.containsKey(ETAG)) {
+        String ver = headers.etag;
+        ver = ver.substring(1, ver.length - 1);
+        completer.complete(ver);
+      } else {
+        completer.complete(null);
+      }
     } else {
-      completer.complete(null);
+      completer.complete(rev);
     }
     return completer.future;
   }

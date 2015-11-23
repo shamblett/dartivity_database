@@ -31,6 +31,5 @@ abstract class _DartivityDatabase {
   /// putMany
   /// Puts many records as a single bulk insert/update
   /// Returns the records actually updated or null.
-  Future<Map<String, json.JsonObject>> putMany(
-      Map<String, json.JsonObject> records);
+  Future<List<json.JsonObject>> putMany(List<json.JsonObject> records);
 }
