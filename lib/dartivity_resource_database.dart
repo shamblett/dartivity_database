@@ -95,8 +95,7 @@ class DartivityResourceDatabase {
   }
 
   /// putMany
-  /// Bulk insert of resources, a list of actual updates performed is
-  /// returned.
+  /// Bulk insert of resources.
   Future<List<DartivityResource>> putMany(
       List<DartivityResource> resList) async {
     Completer completer = new Completer();

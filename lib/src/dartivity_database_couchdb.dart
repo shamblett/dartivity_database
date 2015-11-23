@@ -108,27 +108,25 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// Puts many records as a bulk insert/update
   Future<List<json.JsonObject>> putMany(List<json.JsonObject> records) async {
     if (!_initialised) return null;
-    String rev = _revision.get(resource.id);
-    if (rev == null) {
-      futList.add(sync(resource.id).then((String rev) {
-        String key = rev == null ? "norev" + resource.id : rev;
-        resMap[key] = resource.toJsonObject();
-      }));
-    } else {
-      String key = rev;
-      resMap[key] = resource.toJsonObject();
-    }
-    List<json.JsonObject> resList = new List<json.JsonObject>();
     Completer completer = new Completer();
-    records.forEach((String key, json.JsonObject res) {
-      json.JsonObject tmp = new json.JsonObject.fromJsonString(
-          WiltUserUtils.addDocumentId(res, res.id));
-      if (!key.contains('norev')) tmp = new json.JsonObject.fromJsonString(
-          WiltUserUtils.addDocumentRev(tmp, key));
-      resList.add(tmp);
+
+    // Add id and rev to the json objects
+    var retRecords = records;
+    List<Future<String>> futList = new List<Future<String>>();
+    records.forEach((record) async {
+      String tmp = WiltUserUtils.addDocumentId(record, record.id);
+      json.JsonObject jsonTmp = new json.JsonObject.fromJsonString(tmp);
+      String rev = await _getRevision(record.id);
+      if (rev != null) {
+        tmp = WiltUserUtils.addDocumentRev(jsonTmp, rev);
+        jsonTmp = new json.JsonObject.fromJsonString(tmp);
+      }
+      record = tmp;
     });
+
+    // Do the insert/update
     List<String> docString = new List<String>();
-    resList.forEach((val) {
+    records.forEach((val) {
       docString.add(val.toString());
     });
     String bulk = WiltUserUtils.createBulkInsertString(docString);
@@ -138,13 +136,13 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
       Map<String, json.JsonObject> retMap = new Map<String, json.JsonObject>();
       response.forEach((resp) {
         if (resp != null) {
-          _revision.put(res.id, key);
-          if (resp.containsKey('rev')) retMap[resp.rev] = resp;
+          if (resp.containsKey('rev'))
+            _revision.put(res.id, res.rev);
         }
       });
-      completer.complete(retMap);
+      completer.complete(retRecords);
     } else {
-      completer.complete(false);
+      completer.complete(null);
     }
     return completer.future;
   }
