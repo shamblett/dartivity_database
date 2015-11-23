@@ -53,7 +53,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     if (!res.error) {
       completer.complete(res.jsonCouchResponse);
       String rev = WiltUserUtils.getDocumentRev(res);
-      _revision.put(res.id, rev);
+      _revision.put(key, rev);
     } else {
       completer.complete(null);
     }
@@ -109,55 +109,45 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   Future<List<json.JsonObject>> putMany(List<json.JsonObject> records) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
-
-    // Add id and rev to the json objects
     var retRecords = records;
-    List<Future<String>> futList = new List<Future<String>>();
-    records.forEach((record) async {
-      String tmp = WiltUserUtils.addDocumentId(record, record.id);
-      json.JsonObject jsonTmp = new json.JsonObject.fromJsonString(tmp);
-      String rev = await _getRevision(record.id);
-      if (rev != null) {
-        tmp = WiltUserUtils.addDocumentRev(jsonTmp, rev);
-        jsonTmp = new json.JsonObject.fromJsonString(tmp);
-      }
-      record = tmp;
-    });
-
+    List<json.JsonObject> newRec = new List<json.JsonObject>();
+    // Condition the records
+    newRec = await _conditionBulkInsert(records);
     // Do the insert/update
     List<String> docString = new List<String>();
-    records.forEach((val) {
+    newRec.forEach((val) {
       docString.add(val.toString());
     });
     String bulk = WiltUserUtils.createBulkInsertString(docString);
     var res = await _wilt.bulkString(bulk);
     if (!res.error) {
       json.JsonObject response = res.jsonCouchResponse;
-      Map<String, json.JsonObject> retMap = new Map<String, json.JsonObject>();
       response.forEach((resp) {
-        if (resp != null) {
-          if (resp.containsKey('rev'))
-            _revision.put(res.id, res.rev);
-        }
+        if (resp != null) _revision.put(resp.id, resp.rev);
       });
       completer.complete(retRecords);
     } else {
       completer.complete(null);
     }
+    ;
     return completer.future;
   }
 
   /// all
   /// Gets all records in the database
-  Future<json.JsonObject> all() async {
+  Future<List<json.JsonObject>> all() async {
     if (!_initialised) return null;
     Completer completer = new Completer();
     var res = await _wilt.getAllDocs(includeDocs: true);
     if (!res.error) {
-      res.forEach((resource) {
-        _revision.put(resource.id, WiltUserUtils.getDocumentRev(resource));
+      var docRes = res.jsonCouchResponse;
+      var rows = docRes.rows;
+      List<json.JsonObject> retList = new List<json.JsonObject>();
+      rows.forEach((row) {
+        _revision.put(row.doc.id, WiltUserUtils.getDocumentRev(row.doc));
+        retList.add(row.doc);
       });
-      completer.complete(res.jsonCouchResponse);
+      completer.complete(retList);
     } else {
       completer.complete(false);
     }
@@ -187,6 +177,34 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     } else {
       completer.complete(rev);
     }
+    return completer.future;
+  }
+
+  /// conditionBulkInsert
+  /// Conditions bulk insert json objects.
+  Future<List<json.JsonObject>> _conditionBulkInsert(
+      List<json.JsonObject> records) async {
+    if (!_initialised) return null;
+    Completer completer = new Completer();
+
+    // Add id and rev to the json objects
+    int count = 0;
+    List<json.JsonObject> newRec = new List<json.JsonObject>();
+    records.forEach((record) async {
+      String tmp = WiltUserUtils.addDocumentId(record, record.id);
+      json.JsonObject jsonTmp = new json.JsonObject.fromJsonString(tmp);
+      String rev = await _getRevision(record.id);
+      if (rev != null) {
+        tmp = WiltUserUtils.addDocumentRev(jsonTmp, rev);
+        jsonTmp = new json.JsonObject.fromJsonString(tmp);
+      }
+      newRec.add(jsonTmp);
+      ++count;
+      if (count == records.length) {
+        completer.complete(newRec);
+      }
+    });
+
     return completer.future;
   }
 }

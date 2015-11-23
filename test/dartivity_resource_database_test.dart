@@ -137,14 +137,16 @@ main() {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
       expect(res.updated != dartivityResource1Updated, true);
-      dartivityResource1 = res;
+      dartivityResource1Updated = res.updated;
     });
 
     test("Put Resource - subsequent", () async {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
-      expect(res.updated != dartivityResource1Updated, true);
+      expect(res.updated.millisecondsSinceEpoch >
+          dartivityResource1Updated.millisecondsSinceEpoch, true);
       dartivityResource1Updated = res.updated;
+      dartivityResource1 = res;
     });
 
     test("Get Resource ", () async {
@@ -162,6 +164,10 @@ main() {
     test("Get all Resources ", () async {
       DartivityResource res1 = await db.put(dartivityResource1);
       expect(res1, isNotNull);
+      expect(res1.updated.millisecondsSinceEpoch >
+          dartivityResource1Updated.millisecondsSinceEpoch, true);
+      dartivityResource1Updated = res1.updated;
+      dartivityResource1 = res1;
       iotivityResource2 = new DartivityIotivityResource(
           '/sample/simulator/switch/2',
           '/sample/simulator/switch/2',
@@ -219,12 +225,12 @@ main() {
       expect(res1, isNotNull);
 
       // Delete the resources
-      bool res3 = await db.delete(dartivityResource1);
+      /*bool res3 = await db.delete(dartivityResource1);
       expect(res3, true);
       res3 = await db.delete(dartivityResource2);
       expect(res3, true);
       res3 = await db.delete(dartivityResource3);
-      expect(res3, true);
+      expect(res3, true);*/
     });
 
 

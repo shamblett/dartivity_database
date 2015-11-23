@@ -78,12 +78,11 @@ class DartivityResourceDatabase {
   /// Gets all the resources in the resource database.
   Future<Map<String, DartivityResource>> all() async {
     Completer completer = new Completer();
-    json.JsonObject resList = await _db.all();
+    List<json.JsonObject> resList = await _db.all();
     if (resList != null) {
-      List rows = resList.rows;
       Map<String, DartivityResource> ret = new Map<String, DartivityResource>();
-      rows.forEach((row) {
-        DartivityResource res = new DartivityResource.fromDbRecord(row.doc);
+      resList.forEach((row) {
+        DartivityResource res = new DartivityResource.fromDbRecord(row);
         ret[res.id] = res;
       });
       completer.complete(ret);
