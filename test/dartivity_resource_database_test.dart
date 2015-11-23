@@ -143,8 +143,10 @@ main() {
     test("Put Resource - subsequent", () async {
       DartivityResource res = await db.put(dartivityResource1);
       expect(res, isNotNull);
-      expect(res.updated.millisecondsSinceEpoch >
-          dartivityResource1Updated.millisecondsSinceEpoch, true);
+      expect(
+          res.updated.millisecondsSinceEpoch >
+              dartivityResource1Updated.millisecondsSinceEpoch,
+          true);
       dartivityResource1Updated = res.updated;
       dartivityResource1 = res;
     });
@@ -164,8 +166,10 @@ main() {
     test("Get all Resources ", () async {
       DartivityResource res1 = await db.put(dartivityResource1);
       expect(res1, isNotNull);
-      expect(res1.updated.millisecondsSinceEpoch >
-          dartivityResource1Updated.millisecondsSinceEpoch, true);
+      expect(
+          res1.updated.millisecondsSinceEpoch >
+              dartivityResource1Updated.millisecondsSinceEpoch,
+          true);
       dartivityResource1Updated = res1.updated;
       dartivityResource1 = res1;
       iotivityResource2 = new DartivityIotivityResource(
@@ -232,7 +236,5 @@ main() {
       res3 = await db.delete(dartivityResource3);
       expect(res3, true);
     });
-
-
   });
 }
