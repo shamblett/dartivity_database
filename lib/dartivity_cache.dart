@@ -8,6 +8,11 @@
 part of dartivity_database;
 
 class DartivityCache {
+
+  /// This class implements a general purpose key/value in memory cache.
+  /// It is used by the database classes and can be used if needed by the
+  /// Dartivity clients.
+
   /// The cache
   Map<String, dynamic> _cache;
 

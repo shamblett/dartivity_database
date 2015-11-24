@@ -8,6 +8,14 @@
 part of dartivity_database;
 
 class DartivityResource {
+
+  /// The Dartivity resource class. This class provides a generic interface
+  /// to specific client resource data stuctures for use in the Dartivity suite.
+  /// This class has its own database implementation. Each created resource is
+  /// given a unique identifier derived from the client id and the embedded
+  /// resource identifier, this makes individual Dartivity resources unique
+  /// across the whole of the Dartivity suite.
+
   /// Unique identifier
   String _id;
 

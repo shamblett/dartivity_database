@@ -15,14 +15,10 @@ import 'package:json_object/json_object.dart' as json;
 import 'package:crypto/crypto.dart' show MD5, CryptoUtils;
 
 part 'dartivity_resource_database.dart';
-
 part 'dartivity_iotivity_resource.dart';
-
 part 'dartivity_cache.dart';
 part 'dartivity_resource.dart';
-
 part 'src/dartivity_database_couchdb.dart';
-
 part 'src/dartivity_database.dart';
 
 /// Library globals

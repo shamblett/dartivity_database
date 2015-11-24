@@ -185,6 +185,7 @@ main() {
       expect(res2, isNotNull);
       Map<String, DartivityResource> resAll = await db.all();
       expect(resAll, isNotNull);
+      expect(resAll.length, 2);
       expect(resAll.containsKey(res1.id), true);
       expect(resAll.containsKey(res2.id), true);
       expect(resAll[res1.id] != resAll[res2.id], true);
@@ -223,7 +224,7 @@ main() {
 
       List res = await db.putMany(resList);
       expect(res, isNotNull);
-
+      expect(res.length, 3);
       // Check we have correct revs returned
       DartivityResource res1 = await db.put(dartivityResource1);
       expect(res1, isNotNull);

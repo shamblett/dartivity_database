@@ -8,6 +8,12 @@
 part of dartivity_database;
 
 abstract class _DartivityDatabase {
+
+  /// Provides an interface all dartivity database drivers must supply
+  /// as a minimum. This has been kept minimal by design, individual
+  /// database drivers may of course add more to their interface if
+  /// they wish.
+
   /// login
   void login(String user, String password);
 

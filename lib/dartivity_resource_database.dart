@@ -8,6 +8,12 @@
 part of dartivity_database;
 
 class DartivityResourceDatabase {
+
+  /// This class implements the Dartivity resource database. The implementation
+  /// is revisionless, regardless of what database driver is used, all operations
+  /// occur on the latest revision of a resource.
+  /// As of this release only the CouchDb database driver is available.
+
   /// Database
   var _db;
   final String dbName = 'resource';

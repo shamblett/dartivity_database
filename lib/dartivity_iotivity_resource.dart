@@ -8,7 +8,11 @@
 part of dartivity_database;
 
 class DartivityIotivityResource {
-  /// Client specific resource identifier
+
+  /// The Iotivity resource class.
+
+  /// Client specific resource identifier, must
+  /// be provided.
   String _id;
 
   String get id => _id;

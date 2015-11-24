@@ -8,6 +8,12 @@
 part of dartivity_database;
 
 class _DartivityDatabaseCouchDB implements _DartivityDatabase {
+
+  /// The CouchDb database driver class. Implements the interface to
+  /// CouchDb using the Wilt class and handles CouchDb revisions using
+  /// an instance of the DartivityCache class and the getRevision method
+  /// for direct database enquiries.
+
   /// Wilt
   WiltServerClient _wilt;
 
