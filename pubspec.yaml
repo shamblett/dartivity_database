@@ -1,7 +1,7 @@
 name: dartivity_database
-version: 0.0.1
+version: 0.1.0
 author: Steve Hamblett<steve.hamblett@linux.com>
-description: An iot client library component for Dart
+description: The database component og the Dartivity IOT suite.
 homepage: https://github.com/shamblett/dartivity_database
 environment:
   sdk: '>=1.0.0 <2.0.0'
