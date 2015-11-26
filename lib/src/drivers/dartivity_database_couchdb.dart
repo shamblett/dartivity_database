@@ -54,7 +54,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
       [String rev = null]) async {
     if (!_initialised) return null;
     Completer completer = new Completer();
-    String rev = await _getRevision(key);
+    String rev = await _wilt.getDocumentRevision(key);
     var res = await _wilt.putDocument(key, record, rev);
     if (!res.error) {
       completer.complete(res.jsonCouchResponse);
@@ -94,7 +94,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   Future<bool> delete(String key) async {
     if (!_initialised) return false;
     Completer completer = new Completer();
-    String rev = await _getRevision(key);
+    String rev = await _wilt.getDocumentRevision(key);
     var res = await _wilt.deleteDocument(key, rev);
     if (!res.error) {
       json.JsonObject doc = res.jsonCouchResponse;
@@ -160,32 +160,6 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     return completer.future;
   }
 
-  /// getRevision
-  /// Gets the latest revision of a database record either
-  /// from the cache or from the database itself.
-  Future<String> _getRevision(String key) async {
-    if (!_initialised) return null;
-    Completer completer = new Completer();
-
-    String rev = _revision.get(key);
-    if (rev == null) {
-      String url = key;
-      json.JsonObject res = await _wilt.head(url);
-      json.JsonObject headers =
-      new json.JsonObject.fromMap(res.allResponseHeaders);
-      if (headers.containsKey(ETAG)) {
-        String ver = headers.etag;
-        ver = ver.substring(1, ver.length - 1);
-        completer.complete(ver);
-      } else {
-        completer.complete(null);
-      }
-    } else {
-      completer.complete(rev);
-    }
-    return completer.future;
-  }
-
   /// conditionBulkInsert
   /// Conditions bulk insert json objects.
   Future<List<json.JsonObject>> _conditionBulkInsert(
@@ -199,7 +173,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     records.forEach((record) async {
       String tmp = WiltUserUtils.addDocumentId(record, record.id);
       json.JsonObject jsonTmp = new json.JsonObject.fromJsonString(tmp);
-      String rev = await _getRevision(record.id);
+      String rev = await _wilt.getDocumentRevision(record.id);
       if (rev != null) {
         tmp = WiltUserUtils.addDocumentRev(jsonTmp, rev);
         jsonTmp = new json.JsonObject.fromJsonString(tmp);

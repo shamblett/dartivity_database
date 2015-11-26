@@ -32,7 +32,7 @@ abstract class _DartivityDatabase {
 
   /// all
   /// Gets all the records in a database.
-  Future<json.JsonObject> all();
+  Future<List<json.JsonObject>> all();
 
   /// putMany
   /// Puts many records as a single bulk insert/update
