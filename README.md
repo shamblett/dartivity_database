@@ -3,7 +3,7 @@
 This package provides the database component of the [Dartivity](https://github.com/shamblett/dartivity) suite
 of IOT monitoring and control packages.
 
-The database component consists of both Dartivity resource definition classes and
+The database component consists of both Dartivity entity definition classes and
 the database classes which use them. This allows the database classes to be
 specialised for any particular usage such as the resource database class which provides
 general database facilities for the Dartivity resource class.
