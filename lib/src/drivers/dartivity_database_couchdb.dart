@@ -120,11 +120,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     // Condition the records
     newRec = await _conditionBulkInsert(records);
     // Do the insert/update
-    List<String> docString = new List<String>();
-    newRec.forEach((val) {
-      docString.add(val.toString());
-    });
-    String bulk = WiltUserUtils.createBulkInsertString(docString);
+    String bulk = WiltUserUtils.createBulkInsertStringJo(newRec);
     var res = await _wilt.bulkString(bulk);
     if (!res.error) {
       json.JsonObject response = res.jsonCouchResponse;
@@ -170,15 +166,13 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     // Add id and rev to the json objects
     int count = 0;
     List<json.JsonObject> newRec = new List<json.JsonObject>();
-    records.forEach((record) async {
-      String tmp = WiltUserUtils.addDocumentId(record, record.id);
-      json.JsonObject jsonTmp = new json.JsonObject.fromJsonString(tmp);
+    records.forEach((json.JsonObject record) async {
+      record = WiltUserUtils.addDocumentIdJo(record, record.id);
       String rev = await _wilt.getDocumentRevision(record.id);
       if (rev != null) {
-        tmp = WiltUserUtils.addDocumentRev(jsonTmp, rev);
-        jsonTmp = new json.JsonObject.fromJsonString(tmp);
+        record = WiltUserUtils.addDocumentRevJo(record, rev);
       }
-      newRec.add(jsonTmp);
+      newRec.add(record);
       ++count;
       if (count == records.length) {
         completer.complete(newRec);
