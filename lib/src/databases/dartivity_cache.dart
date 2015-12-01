@@ -8,7 +8,6 @@
 part of dartivity_database;
 
 class DartivityCache {
-
   /// This class implements a general purpose key/value in memory cache.
   /// It is used by the database classes and can be used if needed by the
   /// Dartivity clients.
@@ -49,5 +48,15 @@ class DartivityCache {
   /// all
   Map<String, dynamic> all() {
     return _cache;
+  }
+
+  /// count
+  int count() {
+    return _cache.length;
+  }
+
+  /// keys
+  List<String> keys() {
+    return _cache.keys.toList();
   }
 }

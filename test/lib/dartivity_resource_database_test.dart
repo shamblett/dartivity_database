@@ -114,8 +114,47 @@ main() {
     });
   });
 
-  /* Group 3 - DartivityResourceDatabase tests */
-  group("1. Dartivity Resource Database - ", () {
+  /* Group 3 - Dartivity Cache tests */
+  group("3. Dartivity Cache - ", () {
+    DartivityCache cache = new DartivityCache();
+
+    test("Put/Get", () {
+      cache.put(dartivityResource1.id, dartivityResource1);
+      DartivityResource res = cache.get(dartivityResource1.id);
+      expect(res.id, dartivityResource1.id);
+      expect(cache.count(), 1);
+    });
+
+    test("Delete", () {
+      cache.delete(dartivityResource1.id);
+      expect(cache.count(), 0);
+    });
+
+    test("All", () {
+      dartivityResource2 =
+      new DartivityResource.fromIotivity(iotivityResource2, cfg.clientId);
+      cache.put(dartivityResource1.id, dartivityResource1);
+      cache.put(dartivityResource2.id, dartivityResource2);
+      expect(cache.count(), 2);
+      Map<String, dynamic> res = cache.all();
+      expect(res.containsKey(dartivityResource1.id), true);
+      expect(res.containsKey(dartivityResource2.id), true);
+    });
+
+    test("Keys", () {
+      List<String> res = cache.keys();
+      expect(res[0] == dartivityResource1.id, true);
+      expect(res[1] == dartivityResource2.id, true);
+    });
+
+    test("Clear", () {
+      cache.clear();
+      expect(cache.count(), 0);
+    });
+  });
+
+  /* Group 4 - DartivityResourceDatabase tests */
+  group("4. Dartivity Resource Database - ", () {
     test("Invalid construction - no hostname", () {
       try {
         DartivityResourceDatabase db = new DartivityResourceDatabase(null, "");
