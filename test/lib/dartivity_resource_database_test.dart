@@ -151,6 +151,19 @@ main() {
       cache.clear();
       expect(cache.count(), 0);
     });
+
+    test("Bulk", () {
+      List<DartivityResource> resList = [dartivityResource2, dartivityResource1
+      ];
+      cache.bulk(resList);
+      expect(cache.count(), 2);
+      Map<String, dynamic> res = cache.all();
+      expect(res.containsKey(dartivityResource1.id), true);
+      expect(res.containsKey(dartivityResource2.id), true);
+      cache.clear();
+      expect(cache.count(), 0);
+    });
+
   });
 
   /* Group 4 - DartivityResourceDatabase tests */

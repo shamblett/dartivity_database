@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+Add a bulk insert method to the cache
+
 ## 0.2.0
 
 Issue 1 and cache class method additions

@@ -59,4 +59,12 @@ class DartivityCache {
   List<String> keys() {
     return _cache.keys.toList();
   }
+
+  /// bulk
+  /// The resources must have an id getter.
+  void bulk(List<dynamic> resources) {
+    resources.forEach((resource) {
+      put(resource.id, resource);
+    });
+  }
 }
