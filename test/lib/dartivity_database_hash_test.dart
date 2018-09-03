@@ -3,8 +3,7 @@ import 'dartivity_database_test_cfg.dart' as cfg;
 import 'package:test/test.dart';
 
 int main() {
-  group("Hash tests ", ()
-  {
+  group("Hash tests ", () {
     test("/sample/simulator/light/1", () {
       final String clientId = cfg.clientId;
       final String deviceId = '/sample/simulator/light/1';

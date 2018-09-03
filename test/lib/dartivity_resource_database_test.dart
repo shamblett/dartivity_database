@@ -208,7 +208,10 @@ void main() {
       final DartivityResource res = await db.get(dartivityResource1.id);
       expect(res, isNotNull);
       expect(res.id == dartivityResource1.id, true);
-      expect(res.updated.millisecondsSinceEpoch == dartivityResource1Updated.millisecondsSinceEpoch, true);
+      expect(
+          res.updated.millisecondsSinceEpoch ==
+              dartivityResource1Updated.millisecondsSinceEpoch,
+          true);
     });
 
     test("Delete Resource ", () async {

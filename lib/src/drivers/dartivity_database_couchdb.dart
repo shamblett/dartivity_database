@@ -112,7 +112,8 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// Puts many records as a bulk insert/update
   Future<List<jsonobject.JsonObjectLite>> putMany(List<dynamic> records) async {
     if (!_initialised) return null;
-    final Completer<List<jsonobject.JsonObjectLite>> completer = new Completer<List<jsonobject.JsonObjectLite>>();
+    final Completer<List<jsonobject.JsonObjectLite>> completer =
+        new Completer<List<jsonobject.JsonObjectLite>>();
     final retRecords = records;
     // Condition the records
     var newRec = await _conditionBulkInsert(records);
@@ -121,7 +122,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
     final res = await _wilt.bulkString(bulk);
     if (!res.error) {
       jsonobject.JsonObjectLite resp = res.jsonCouchResponse;
-      for ( jsonobject.JsonObjectLite t in resp.toList() ) {
+      for (jsonobject.JsonObjectLite t in resp.toList()) {
         final dynamic tmp = t as dynamic;
         if (tmp != null) _revision.put(tmp.id, tmp.rev);
       }
@@ -156,13 +157,16 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
 
   /// conditionBulkInsert
   /// Conditions bulk insert json objects.
-  Future<List<jsonobject.JsonObjectLite>> _conditionBulkInsert(List<jsonobject.JsonObjectLite> records) async {
+  Future<List<jsonobject.JsonObjectLite>> _conditionBulkInsert(
+      List<jsonobject.JsonObjectLite> records) async {
     if (!_initialised) return null;
-    final Completer<List<jsonobject.JsonObjectLite>> completer = new Completer<List<jsonobject.JsonObjectLite>>();
+    final Completer<List<jsonobject.JsonObjectLite>> completer =
+        new Completer<List<jsonobject.JsonObjectLite>>();
 
     // Add id and rev to the json objects
     int count = 0;
-    final List<jsonobject.JsonObjectLite> newRec = new List<jsonobject.JsonObjectLite>();
+    final List<jsonobject.JsonObjectLite> newRec =
+        new List<jsonobject.JsonObjectLite>();
     records.forEach((dynamic record) async {
       record = WiltUserUtils.addDocumentIdJo(record, record.id);
       final String rev = await _wilt.getDocumentRevision(record.id);

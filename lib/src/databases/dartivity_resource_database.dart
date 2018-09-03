@@ -108,7 +108,8 @@ class DartivityResourceDatabase {
       List<DartivityResource> resList) async {
     final Completer<List<DartivityResource>> completer =
         new Completer<List<DartivityResource>>();
-    final List<jsonobject.JsonObjectLite> jsonList = new List<jsonobject.JsonObjectLite>();
+    final List<jsonobject.JsonObjectLite> jsonList =
+        new List<jsonobject.JsonObjectLite>();
     for (DartivityResource resource in resList) {
       resource.updated = new DateTime.now();
       jsonList.add(resource.toJsonObject());
