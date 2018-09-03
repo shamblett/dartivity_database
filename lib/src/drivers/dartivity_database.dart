@@ -8,7 +8,6 @@
 part of dartivity_database;
 
 abstract class _DartivityDatabase {
-
   /// Provides an interface all dartivity database drivers must supply
   /// as a minimum. This has been kept minimal by design, individual
   /// database drivers may of course add more to their interface if
@@ -20,11 +19,11 @@ abstract class _DartivityDatabase {
   /// put
   /// Put a database record. Returns the updated record or
   /// null on error.
-  Future<json.JsonObject> put(String key, json.JsonObject record);
+  Future<dynamic> put(String key, dynamic record);
 
   /// get
   /// Returns a database record or null.
-  Future<json.JsonObject> get(String key);
+  Future<dynamic> get(String key);
 
   /// delete
   /// False indicates the delete operation has failed.
@@ -32,10 +31,10 @@ abstract class _DartivityDatabase {
 
   /// all
   /// Gets all the records in a database.
-  Future<List<json.JsonObject>> all();
+  Future<List<dynamic>> all();
 
   /// putMany
   /// Puts many records as a single bulk insert/update
   /// Returns null if the operation fails.
-  Future<List<json.JsonObject>> putMany(List<json.JsonObject> records);
+  Future<List<dynamic>> putMany(List<dynamic> records);
 }

@@ -15,3 +15,6 @@ pubspec.lock
 
 # Others
 .idea/
+
+# Dart 2 additions
+.dart_tool/

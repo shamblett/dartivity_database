@@ -8,13 +8,38 @@
 part of dartivity_database;
 
 class DartivityResource {
-
   /// The Dartivity resource class. This class provides a generic interface
   /// to specific client resource data stuctures for use in the Dartivity suite.
   /// This class has its own database implementation. Each created resource is
   /// given a unique identifier derived from the client id and the embedded
   /// resource identifier, this makes individual Dartivity resources unique
   /// across the whole of the Dartivity suite.
+
+  /// fromIotivity
+  /// Creates a resource from an Iotivity resource
+  DartivityResource.fromIotivity(
+      DartivityIotivityResource resource, String clientId) {
+    // Get the id as a hash from the client id and the device id
+    final String tmp = clientId + resource.id;
+    final hasher = md5;
+    final digest = hasher.convert(tmp.codeUnits);
+    _id = digest.toString();
+
+    _clientId = clientId;
+    _provider = resource.provider;
+    _resource = resource;
+    updated = new DateTime.now();
+  }
+
+  /// fromDBRecord
+  /// Creates a resource from a database record
+  DartivityResource.fromDbRecord(dynamic record) {
+    _id = record.id;
+    _provider = record.provider;
+    _clientId = record.clientId;
+    _resource = new DartivityIotivityResource.fromJsonObject(record.resource);
+    updated = new DateTime.fromMillisecondsSinceEpoch(record.updated);
+  }
 
   /// Unique identifier
   String _id;
@@ -39,46 +64,25 @@ class DartivityResource {
   /// Lat updated
   DateTime updated;
 
-  /// fromIotivity
-  /// Creates a resource from an Iotivity resource
-  DartivityResource.fromIotivity(DartivityIotivityResource resource,
-      String clientId) {
-    // Get the id as a hash from the client id and the device id
-    String tmp = clientId + resource.id;
-    var hasher = new MD5();
-    hasher.add(tmp.codeUnits);
-    _id = CryptoUtils.bytesToHex(hasher.close());
-
-    _clientId = clientId;
-    _provider = resource.provider;
-    _resource = resource;
-    updated = new DateTime.now();
-  }
-
-  /// fromDBRecord
-  /// Creates a resource from a database record
-  DartivityResource.fromDbRecord(json.JsonObject record) {
-    _id = record.id;
-    _provider = record.provider;
-    _clientId = record.clientId;
-    _resource = new DartivityIotivityResource.fromJsonObject(record.resource);
-    updated = new DateTime.fromMillisecondsSinceEpoch(record.updated);
-  }
-
   /// toString
   String toString() {
     return "Id : ${id}, Provider : ${provider}";
   }
 
   /// equals ovverride
-  bool operator ==(DartivityResource other) {
+  bool operator ==(dynamic other) {
     bool state = false;
-    return this.id == other.id ? state = true : state;
+    if (other is DartivityResource) {
+      return this.id == other.id ? state = true : state;
+    }
+    return false;
   }
 
+  int get hashCode => int.tryParse(_id);
+
   /// toJsonObject
-  json.JsonObject toJsonObject() {
-    json.JsonObject ret = new json.JsonObject();
+  dynamic toJsonObject() {
+    final dynamic ret = new jsonobject.JsonObjectLite();
 
     ret.id = id;
     ret.provider = provider;

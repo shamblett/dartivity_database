@@ -8,9 +8,29 @@
 part of dartivity_database;
 
 class DartivityIotivityResource {
-
   /// The Iotivity resource class.
 
+  /// Construction
+  DartivityIotivityResource(String id, String uri, String host,
+      List<String> resTypes, List<String> intTypes, bool observable) {
+    _id = id;
+    _uri = uri;
+    _host = host;
+    _observable = observable;
+    _resourceTypes = resTypes;
+    _interfaceTypes = intTypes;
+  }
+
+  DartivityIotivityResource.fromJsonObject(dynamic record) {
+    _id = record.id;
+    _uri = record.uri;
+    _host = record.host;
+    _observable = record.observable;
+    _resourceTypes = record.resourceTypes;
+    _interfaceTypes = record.interfaceTypes;
+  }
+
+  //
   /// Client specific resource identifier, must
   /// be provided.
   String _id;
@@ -31,39 +51,19 @@ class DartivityIotivityResource {
   final String provider = providerIotivity;
 
   /// Resource types
-  List<String> _resourceTypes;
+  List<dynamic> _resourceTypes;
 
-  List<String> get resourceTypes => _resourceTypes;
+  List<dynamic> get resourceTypes => _resourceTypes;
 
   /// Interface types
-  List<String> _interfaceTypes;
+  List<dynamic> _interfaceTypes;
 
-  List<String> get interfaceTypes => _interfaceTypes;
+  List<dynamic> get interfaceTypes => _interfaceTypes;
 
   /// Observable
   bool _observable = false;
 
   bool get observable => _observable;
-
-  /// Construction
-  DartivityIotivityResource(String id, String uri, String host,
-      List<String> resTypes, List<String> intTypes, bool observable) {
-    _id = id;
-    _uri = uri;
-    _host = host;
-    _observable = observable;
-    _resourceTypes = resTypes;
-    _interfaceTypes = intTypes;
-  }
-
-  DartivityIotivityResource.fromJsonObject(json.JsonObject record) {
-    _id = record.id;
-    _uri = record.uri;
-    _host = record.host;
-    _observable = record.observable;
-    _resourceTypes = record.resourceTypes;
-    _interfaceTypes = record.interfaceTypes;
-  }
 
   /// toString
   String toString() {
@@ -71,42 +71,45 @@ class DartivityIotivityResource {
   }
 
   /// Equality
-  bool operator ==(DartivityIotivityResource other) {
-    return (other.id == _id);
+  bool operator ==(dynamic other) {
+    if (other is DartivityIotivityResource) {
+      return (other.id == _id);
+    }
+    return false;
   }
 
-  static const String MAP_IDENTIFIER = "id";
-  static const String MAP_URI = "uri";
-  static const String MAP_HOST = "host";
-  static const String MAP_PROVIDER = "provider";
-  static const String MAP_OBSERVABLE = "observable";
-  static const String MAP_RESOURCE_TYPES = "resourceTypes";
-  static const String MAP_INTERFACE_TYPES = "interfaceTypes";
+  int get hashCode => int.tryParse(_id);
+
+  static const String mapIdentifier = "id";
+  static const String mapUri = "uri";
+  static const String mapHost = "host";
+  static const String mapProvider = "provider";
+  static const String mapObservable = "observable";
+  static const String mapResourceTypes = "resourceTypes";
+  static const String mapInterfaceTypes = "interfaceTypes";
 
   /// toMap
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> returnMap = new Map<String, dynamic>();
+    final Map<String, dynamic> returnMap = new Map<String, dynamic>();
 
-    returnMap[MAP_IDENTIFIER] = this._id;
-    returnMap[MAP_URI] = this._uri;
-    returnMap[MAP_HOST] = this._host;
-    returnMap[MAP_PROVIDER] = this.provider;
-    returnMap[MAP_OBSERVABLE] = this._observable;
-    returnMap[MAP_RESOURCE_TYPES] = this._resourceTypes;
-    returnMap[MAP_INTERFACE_TYPES] = this._interfaceTypes;
+    returnMap[mapIdentifier] = this._id;
+    returnMap[mapUri] = this._uri;
+    returnMap[mapHost] = this._host;
+    returnMap[mapProvider] = this.provider;
+    returnMap[mapObservable] = this._observable;
+    returnMap[mapResourceTypes] = this._resourceTypes;
+    returnMap[mapInterfaceTypes] = this._interfaceTypes;
 
     return returnMap;
   }
 
   /// toJson
   String toJson() {
-    json.JsonObject temp = new json.JsonObject.fromMap(toMap());
-    return temp.toString();
+    return json.encode(toMap());
   }
 
   /// toJsonObject
-  json.JsonObject toJsonObject() {
-    json.JsonObject temp = new json.JsonObject.fromMap(toMap());
-    return temp;
+  dynamic toJsonObject() {
+    return new jsonobject.JsonObjectLite.fromJsonString(toJson());
   }
 }

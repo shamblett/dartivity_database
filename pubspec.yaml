@@ -1,13 +1,22 @@
 name: dartivity_database
-version: 0.3.0
+version: 1.0.0
 author: Steve Hamblett<steve.hamblett@linux.com>
 description: The database component og the Dartivity IOT suite.
 homepage: https://github.com/shamblett/dartivity_database
 environment:
-  sdk: '>=1.0.0 <2.0.0'
+  sdk: '>=2.0.0-dev <3.0.0'
 dependencies:
-  wilt: '<=4.0.0'
-  json_object: '>=1.0.19'
-  crypto: 'any'
+  wilt: '>=4.0.0 <=5.0.0'
+  json_object_lite: '^2.0.0'
+  crypto: '>=2.0.1 <3.0.0'
+
 dev_dependencies:
-  test: '>=0.12.0 <0.13.0'
+  test: '^1.3.0'
+  coverage: '^0.12.2'
+  #dart_dev: '^2.0.0-alpha'
+  dart_style: '^1.1.3'
+  dartdoc: '^0.20.3'
+  build_runner: '^0.10.0'
+  build_test: '^0.10.2'
+  build_web_compilers: '^0.4.0'
+
