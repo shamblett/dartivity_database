@@ -1,7 +1,7 @@
 name: dartivity_database
 version: 1.0.0
 author: Steve Hamblett<steve.hamblett@linux.com>
-description: The database component og the Dartivity IOT suite.
+description: The database component of the Dartivity IOT suite of packages.
 homepage: https://github.com/shamblett/dartivity_database
 environment:
   sdk: '>=2.0.0-dev <3.0.0'
