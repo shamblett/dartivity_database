@@ -116,12 +116,12 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
         new Completer<List<jsonobject.JsonObjectLite>>();
     final retRecords = records;
     // Condition the records
-    var newRec = await _conditionBulkInsert(records);
+    final newRec = await _conditionBulkInsert(records);
     // Do the insert/update
     final String bulk = WiltUserUtils.createBulkInsertStringJo(newRec);
     final res = await _wilt.bulkString(bulk);
     if (!res.error) {
-      jsonobject.JsonObjectLite resp = res.jsonCouchResponse;
+      final jsonobject.JsonObjectLite resp = res.jsonCouchResponse;
       for (jsonobject.JsonObjectLite t in resp.toList()) {
         final dynamic tmp = t as dynamic;
         if (tmp != null) _revision.put(tmp.id, tmp.rev);
