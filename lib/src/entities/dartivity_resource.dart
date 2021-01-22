@@ -20,7 +20,7 @@ class DartivityResource {
   DartivityResource.fromIotivity(
       DartivityIotivityResource resource, String clientId) {
     // Get the id as a hash from the client id and the device id
-    final String tmp = clientId + resource.id!;
+    final tmp = clientId + resource.id!;
     final hasher = md5;
     final digest = hasher.convert(tmp.codeUnits);
     _id = digest.toString();
@@ -28,7 +28,7 @@ class DartivityResource {
     _clientId = clientId;
     _provider = resource.provider;
     _resource = resource;
-    updated = new DateTime.now();
+    updated = DateTime.now();
   }
 
   /// fromDBRecord
@@ -37,8 +37,8 @@ class DartivityResource {
     _id = record.id;
     _provider = record.provider;
     _clientId = record.clientId;
-    _resource = new DartivityIotivityResource.fromJsonObject(record.resource);
-    updated = new DateTime.fromMillisecondsSinceEpoch(record.updated);
+    _resource = DartivityIotivityResource.fromJsonObject(record.resource);
+    updated = DateTime.fromMillisecondsSinceEpoch(record.updated);
   }
 
   /// Unique identifier
@@ -65,24 +65,27 @@ class DartivityResource {
   DateTime? updated;
 
   /// toString
+  @override
   String toString() {
-    return "Id : ${id}, Provider : ${provider}";
+    return 'Id : ${id}, Provider : ${provider}';
   }
 
   /// equals ovverride
+  @override
   bool operator ==(dynamic other) {
-    bool state = false;
+    var state = false;
     if (other is DartivityResource) {
-      return this.id == other.id ? state = true : state;
+      return id == other.id ? state = true : state;
     }
     return false;
   }
 
+  @override
   int get hashCode => int.tryParse(_id!)!;
 
   /// toJsonObject
   dynamic toJsonObject() {
-    final dynamic ret = new jsonobject.JsonObjectLite();
+    final dynamic ret = jsonobject.JsonObjectLite();
 
     ret.id = id;
     ret.provider = provider;

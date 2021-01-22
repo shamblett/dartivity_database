@@ -66,11 +66,13 @@ class DartivityIotivityResource {
   bool? get observable => _observable;
 
   /// toString
+  @override
   String toString() {
     return _id!;
   }
 
   /// Equality
+  @override
   bool operator ==(dynamic other) {
     if (other is DartivityIotivityResource) {
       return (other.id == _id);
@@ -78,27 +80,28 @@ class DartivityIotivityResource {
     return false;
   }
 
+  @override
   int get hashCode => int.tryParse(_id!)!;
 
-  static const String mapIdentifier = "id";
-  static const String mapUri = "uri";
-  static const String mapHost = "host";
-  static const String mapProvider = "provider";
-  static const String mapObservable = "observable";
-  static const String mapResourceTypes = "resourceTypes";
-  static const String mapInterfaceTypes = "interfaceTypes";
+  static const String mapIdentifier = 'id';
+  static const String mapUri = 'uri';
+  static const String mapHost = 'host';
+  static const String mapProvider = 'provider';
+  static const String mapObservable = 'observable';
+  static const String mapResourceTypes = 'resourceTypes';
+  static const String mapInterfaceTypes = 'interfaceTypes';
 
   /// toMap
   Map<String, dynamic> toMap() {
-    final Map<String, dynamic> returnMap = new Map<String, dynamic>();
+    final returnMap = <String, dynamic>{};
 
-    returnMap[mapIdentifier] = this._id;
-    returnMap[mapUri] = this._uri;
-    returnMap[mapHost] = this._host;
-    returnMap[mapProvider] = this.provider;
-    returnMap[mapObservable] = this._observable;
-    returnMap[mapResourceTypes] = this._resourceTypes;
-    returnMap[mapInterfaceTypes] = this._interfaceTypes;
+    returnMap[mapIdentifier] = _id;
+    returnMap[mapUri] = _uri;
+    returnMap[mapHost] = _host;
+    returnMap[mapProvider] = provider;
+    returnMap[mapObservable] = _observable;
+    returnMap[mapResourceTypes] = _resourceTypes;
+    returnMap[mapInterfaceTypes] = _interfaceTypes;
 
     return returnMap;
   }
@@ -110,6 +113,6 @@ class DartivityIotivityResource {
 
   /// toJsonObject
   dynamic toJsonObject() {
-    return new jsonobject.JsonObjectLite.fromJsonString(toJson());
+    return jsonobject.JsonObjectLite.fromJsonString(toJson());
   }
 }

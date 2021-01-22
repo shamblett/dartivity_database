@@ -16,7 +16,7 @@ class DartivityCache {
   Map<String?, dynamic>? _cache;
 
   DartivityCache() {
-    _cache = new Map<String?, dynamic>();
+    _cache = <String?, dynamic>{};
   }
 
   /// get

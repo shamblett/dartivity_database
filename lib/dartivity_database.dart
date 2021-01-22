@@ -29,5 +29,5 @@ part 'src/drivers/dartivity_database.dart';
 /// Library globals
 
 /// Providers
-final String providerUnknown = "Unknown";
-final String providerIotivity = "iotivity";
+final String providerUnknown = 'Unknown';
+final String providerIotivity = 'iotivity';

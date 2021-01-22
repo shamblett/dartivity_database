@@ -14,8 +14,8 @@ class DartivityResourceDatabase {
   /// As of this release only the CouchDb database driver is available.
 
   DartivityResourceDatabase(String? hostname,
-      [String? username = null, String? password = null]) {
-    _db = new _DartivityDatabaseCouchDB(hostname, dbName, "5984", "http://");
+      [String? username, String? password]) {
+    _db = _DartivityDatabaseCouchDB(hostname, dbName, '5984', 'http://');
 
     if ((username != null) && (password != null)) _db.login(username, password);
   }
@@ -36,13 +36,12 @@ class DartivityResourceDatabase {
   /// Returns a DartivityResource or null if none found.
   /// Always gets the latest revision
   Future<DartivityResource> get(String? key) async {
-    final Completer<DartivityResource> completer =
-        new Completer<DartivityResource>();
+    final completer = Completer<DartivityResource>();
     final dynamic record = await _db.get(key);
     if (record == null) {
       completer.complete(null);
     } else {
-      final DartivityResource res = new DartivityResource.fromDbRecord(record);
+      final res = DartivityResource.fromDbRecord(record);
       completer.complete(res);
     }
     return completer.future;
@@ -52,9 +51,8 @@ class DartivityResourceDatabase {
   /// Returns the resource with the update time updated.
   /// Null indicates the put failed.
   Future<DartivityResource> put(DartivityResource resource) async {
-    final Completer<DartivityResource> completer =
-        new Completer<DartivityResource>();
-    resource.updated = new DateTime.now();
+    final completer = Completer<DartivityResource>();
+    resource.updated = DateTime.now();
     final dynamic res = await _db.put(resource.id, resource.toJsonObject());
     if (res != null) {
       if (res.ok) {
@@ -71,7 +69,7 @@ class DartivityResourceDatabase {
   /// delete
   /// Returns true if successful
   Future<bool> delete(DartivityResource resource) async {
-    final Completer<bool> completer = new Completer<bool>();
+    final completer = Completer<bool>();
     final bool res = await _db.delete(resource.id);
     if (res) {
       completer.complete(true);
@@ -84,14 +82,12 @@ class DartivityResourceDatabase {
   /// all
   /// Gets all the resources in the resource database.
   Future<Map<String?, DartivityResource>> all() async {
-    final Completer<Map<String?, DartivityResource>> completer =
-        new Completer<Map<String, DartivityResource>>();
+    final completer = Completer<Map<String?, DartivityResource>>();
     final List<dynamic>? resList = await _db.all();
     if (resList != null) {
-      final Map<String?, DartivityResource> ret =
-          new Map<String?, DartivityResource>();
+      final ret = <String?, DartivityResource>{};
       resList.forEach((row) {
-        final DartivityResource res = new DartivityResource.fromDbRecord(row);
+        final res = DartivityResource.fromDbRecord(row);
         ret[res.id] = res;
       });
       completer.complete(ret);
@@ -106,19 +102,17 @@ class DartivityResourceDatabase {
   /// Bulk insert of resources.
   Future<List<DartivityResource>> putMany(
       List<DartivityResource?> resList) async {
-    final Completer<List<DartivityResource>> completer =
-        new Completer<List<DartivityResource>>();
-    final List<jsonobject.JsonObjectLite> jsonList =
-        new List<jsonobject.JsonObjectLite>();
-    for (DartivityResource? resource in resList) {
-      resource!.updated = new DateTime.now();
+    final completer = Completer<List<DartivityResource>>();
+    final jsonList = <jsonobject.JsonObjectLite>[];
+    for (var resource in resList) {
+      resource!.updated = DateTime.now();
       jsonList.add(resource.toJsonObject());
     }
     final List<dynamic>? jsonRes = await _db.putMany(jsonList);
     if (jsonRes != null) {
-      final List<DartivityResource> retList = new List<DartivityResource>();
+      final retList = <DartivityResource>[];
       jsonRes.forEach((resource) {
-        retList.add(new DartivityResource.fromDbRecord(resource));
+        retList.add(DartivityResource.fromDbRecord(resource));
       });
       completer.complete(retList);
     } else {
