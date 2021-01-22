@@ -13,19 +13,19 @@ class DartivityResourceDatabase {
   /// occur on the latest revision of a resource.
   /// As of this release only the CouchDb database driver is available.
 
-  DartivityResourceDatabase(String hostname,
-      [String username = null, String password = null]) {
+  DartivityResourceDatabase(String? hostname,
+      [String? username = null, String? password = null]) {
     _db = new _DartivityDatabaseCouchDB(hostname, dbName, "5984", "http://");
 
     if ((username != null) && (password != null)) _db.login(username, password);
   }
   //
   /// Database
-  var _db;
+  late var _db;
   final String dbName = 'resource';
 
   /// Initialised
-  bool get initialised => _db.initialised;
+  bool? get initialised => _db.initialised;
 
   /// login
   void login(String user, String password) {
@@ -35,7 +35,7 @@ class DartivityResourceDatabase {
   /// get
   /// Returns a DartivityResource or null if none found.
   /// Always gets the latest revision
-  Future<DartivityResource> get(String key) async {
+  Future<DartivityResource> get(String? key) async {
     final Completer<DartivityResource> completer =
         new Completer<DartivityResource>();
     final dynamic record = await _db.get(key);
@@ -83,13 +83,13 @@ class DartivityResourceDatabase {
 
   /// all
   /// Gets all the resources in the resource database.
-  Future<Map<String, DartivityResource>> all() async {
-    final Completer<Map<String, DartivityResource>> completer =
+  Future<Map<String?, DartivityResource>> all() async {
+    final Completer<Map<String?, DartivityResource>> completer =
         new Completer<Map<String, DartivityResource>>();
-    final List<dynamic> resList = await _db.all();
+    final List<dynamic>? resList = await _db.all();
     if (resList != null) {
-      final Map<String, DartivityResource> ret =
-          new Map<String, DartivityResource>();
+      final Map<String?, DartivityResource> ret =
+          new Map<String?, DartivityResource>();
       resList.forEach((row) {
         final DartivityResource res = new DartivityResource.fromDbRecord(row);
         ret[res.id] = res;
@@ -105,16 +105,16 @@ class DartivityResourceDatabase {
   /// putMany
   /// Bulk insert of resources.
   Future<List<DartivityResource>> putMany(
-      List<DartivityResource> resList) async {
+      List<DartivityResource?> resList) async {
     final Completer<List<DartivityResource>> completer =
         new Completer<List<DartivityResource>>();
     final List<jsonobject.JsonObjectLite> jsonList =
         new List<jsonobject.JsonObjectLite>();
-    for (DartivityResource resource in resList) {
-      resource.updated = new DateTime.now();
+    for (DartivityResource? resource in resList) {
+      resource!.updated = new DateTime.now();
       jsonList.add(resource.toJsonObject());
     }
-    final List<dynamic> jsonRes = await _db.putMany(jsonList);
+    final List<dynamic>? jsonRes = await _db.putMany(jsonList);
     if (jsonRes != null) {
       final List<DartivityResource> retList = new List<DartivityResource>();
       jsonRes.forEach((resource) {

@@ -20,7 +20,7 @@ class DartivityResource {
   DartivityResource.fromIotivity(
       DartivityIotivityResource resource, String clientId) {
     // Get the id as a hash from the client id and the device id
-    final String tmp = clientId + resource.id;
+    final String tmp = clientId + resource.id!;
     final hasher = md5;
     final digest = hasher.convert(tmp.codeUnits);
     _id = digest.toString();
@@ -42,19 +42,19 @@ class DartivityResource {
   }
 
   /// Unique identifier
-  String _id;
+  String? _id;
 
-  String get id => _id;
+  String? get id => _id;
 
   /// Provider
-  String _provider = providerUnknown;
+  String? _provider = providerUnknown;
 
-  String get provider => _provider;
+  String? get provider => _provider;
 
   /// Dartivity client id
-  String _clientId;
+  String? _clientId;
 
-  String get clientId => _clientId;
+  String? get clientId => _clientId;
 
   /// The actual resource from the provider
   dynamic _resource;
@@ -62,7 +62,7 @@ class DartivityResource {
   dynamic get resource => _resource;
 
   /// Lat updated
-  DateTime updated;
+  DateTime? updated;
 
   /// toString
   String toString() {
@@ -78,7 +78,7 @@ class DartivityResource {
     return false;
   }
 
-  int get hashCode => int.tryParse(_id);
+  int get hashCode => int.tryParse(_id!)!;
 
   /// toJsonObject
   dynamic toJsonObject() {
@@ -88,7 +88,7 @@ class DartivityResource {
     ret.provider = provider;
     ret.clientId = clientId;
     ret.resource = resource.toJsonObject();
-    ret.updated = updated.millisecondsSinceEpoch;
+    ret.updated = updated!.millisecondsSinceEpoch;
     return ret;
   }
 }

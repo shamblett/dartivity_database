@@ -31,10 +31,10 @@ abstract class _DartivityDatabase {
 
   /// all
   /// Gets all the records in a database.
-  Future<List<dynamic>> all();
+  Future<List<dynamic>?> all();
 
   /// putMany
   /// Puts many records as a single bulk insert/update
   /// Returns null if the operation fails.
-  Future<List<dynamic>> putMany(List<dynamic> records);
+  Future<List<dynamic>?> putMany(List<dynamic> records);
 }

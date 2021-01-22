@@ -14,9 +14,9 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// for direct database enquiries.
 
   /// Always the default port and HTTP.
-  _DartivityDatabaseCouchDB(String hostname, String dbName,
-      [String username = null, String password = null]) {
-    _wilt = new WiltServerClient(hostname, "5984", "http://");
+  _DartivityDatabaseCouchDB(String? hostname, String dbName,
+      [String? username = null, String? password = null]) {
+    _wilt = new Wilt(hostname);
     _wilt.db = dbName;
 
     if ((username != null) && (password != null))
@@ -28,10 +28,10 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   }
 
   /// Wilt
-  WiltServerClient _wilt;
+  late Wilt _wilt;
 
   /// Revision cache
-  DartivityCache _revision;
+  late DartivityCache _revision;
 
   /// Initialised
   bool _initialised = false;
@@ -49,10 +49,10 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   /// put
   /// Put a database record. Returns the database response or
   /// null on error.
-  Future<dynamic> put(String key, dynamic record, [String rev = null]) async {
+  Future<dynamic> put(String key, dynamic record, [String? rev = null]) async {
     if (!_initialised) return null;
     final Completer completer = new Completer();
-    final String rev = await _wilt.getDocumentRevision(key);
+    final String rev = await (_wilt.getDocumentRevision(key) as FutureOr<String>);
     final res = await _wilt.putDocument(key, record, rev);
     if (!res.error) {
       completer.complete(res.jsonCouchResponse);
@@ -92,7 +92,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
   Future<bool> delete(String key) async {
     if (!_initialised) return false;
     final Completer<bool> completer = new Completer<bool>();
-    final String rev = await _wilt.getDocumentRevision(key);
+    final String rev = await (_wilt.getDocumentRevision(key) as FutureOr<String>);
     final res = await _wilt.deleteDocument(key, rev);
     if (!res.error) {
       final dynamic doc = res.jsonCouchResponse;
@@ -110,19 +110,19 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
 
   /// putMany
   /// Puts many records as a bulk insert/update
-  Future<List<jsonobject.JsonObjectLite>> putMany(List<dynamic> records) async {
+  Future<List<jsonobject.JsonObjectLite>?> putMany(List<dynamic> records) async {
     if (!_initialised) return null;
     final Completer<List<jsonobject.JsonObjectLite>> completer =
         new Completer<List<jsonobject.JsonObjectLite>>();
     final retRecords = records;
     // Condition the records
-    final newRec = await _conditionBulkInsert(records);
+    final newRec = await (_conditionBulkInsert(records as List<jsonobject.JsonObjectLite<dynamic>>) as FutureOr<List<jsonobject.JsonObjectLite<dynamic>>>);
     // Do the insert/update
     final String bulk = WiltUserUtils.createBulkInsertStringJo(newRec);
     final res = await _wilt.bulkString(bulk);
     if (!res.error) {
       final jsonobject.JsonObjectLite resp = res.jsonCouchResponse;
-      for (jsonobject.JsonObjectLite t in resp.toList()) {
+      for (jsonobject.JsonObjectLite? t in resp.toList() as Iterable<jsonobject.JsonObjectLite<dynamic>?>) {
         final dynamic tmp = t as dynamic;
         if (tmp != null) _revision.put(tmp.id, tmp.rev);
       }
@@ -136,7 +136,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
 
   /// all
   /// Gets all records in the database
-  Future<List<dynamic>> all() async {
+  Future<List<dynamic>?> all() async {
     if (!_initialised) return null;
     final Completer<List<dynamic>> completer = new Completer<List<dynamic>>();
     final res = await _wilt.getAllDocs(includeDocs: true);
@@ -157,7 +157,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
 
   /// conditionBulkInsert
   /// Conditions bulk insert json objects.
-  Future<List<jsonobject.JsonObjectLite>> _conditionBulkInsert(
+  Future<List<jsonobject.JsonObjectLite>?> _conditionBulkInsert(
       List<jsonobject.JsonObjectLite> records) async {
     if (!_initialised) return null;
     final Completer<List<jsonobject.JsonObjectLite>> completer =
@@ -169,7 +169,7 @@ class _DartivityDatabaseCouchDB implements _DartivityDatabase {
         new List<jsonobject.JsonObjectLite>();
     records.forEach((dynamic record) async {
       record = WiltUserUtils.addDocumentIdJo(record, record.id);
-      final String rev = await _wilt.getDocumentRevision(record.id);
+      final String? rev = await (_wilt.getDocumentRevision(record.id) as FutureOr<String?>);
       if (rev != null) {
         record = WiltUserUtils.addDocumentRevJo(record, rev);
       }

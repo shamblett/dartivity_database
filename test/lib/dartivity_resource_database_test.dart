@@ -5,13 +5,13 @@ import 'package:test/test.dart';
 import 'dartivity_database_test_cfg.dart' as cfg;
 
 void main() {
-  DartivityIotivityResource iotivityResource1;
-  DartivityIotivityResource iotivityResource2;
+  DartivityIotivityResource? iotivityResource1;
+  DartivityIotivityResource? iotivityResource2;
   DartivityIotivityResource iotivityResource3;
-  DartivityResource dartivityResource1;
-  DartivityResource dartivityResource2;
-  DartivityResource dartivityResource3;
-  DateTime dartivityResource1Updated;
+  DartivityResource? dartivityResource1;
+  DartivityResource? dartivityResource2;
+  DartivityResource? dartivityResource3;
+  DateTime? dartivityResource1Updated;
 
   /* Group 1 - DartivityIotivityResource tests */
   group("1. Dartivity Iotivity Resource - ", () {
@@ -23,12 +23,12 @@ void main() {
           ['res1', 'res2'],
           ['int1', 'int2'],
           true);
-      expect(iotivityResource1.id, '/sample/simulator/light/1');
-      expect(iotivityResource1.uri, '/sample/simulator/light/1');
-      expect(iotivityResource1.host, 'localhost');
-      expect(iotivityResource1.observable, true);
-      expect(iotivityResource1.resourceTypes, ['res1', 'res2']);
-      expect(iotivityResource1.interfaceTypes, ['int1', 'int2']);
+      expect(iotivityResource1!.id, '/sample/simulator/light/1');
+      expect(iotivityResource1!.uri, '/sample/simulator/light/1');
+      expect(iotivityResource1!.host, 'localhost');
+      expect(iotivityResource1!.observable, true);
+      expect(iotivityResource1!.resourceTypes, ['res1', 'res2']);
+      expect(iotivityResource1!.interfaceTypes, ['int1', 'int2']);
     });
 
     test("Equality", () {
@@ -48,7 +48,7 @@ void main() {
     });
 
     test("To Map", () {
-      final Map<String, dynamic> resmap = iotivityResource1.toMap();
+      final Map<String, dynamic> resmap = iotivityResource1!.toMap();
       expect(resmap['id'], '/sample/simulator/light/1');
       expect(resmap['uri'], '/sample/simulator/light/1');
       expect(resmap['host'], 'localhost');
@@ -59,7 +59,7 @@ void main() {
     });
 
     test("To JsonObject", () {
-      final dynamic jsonobj = iotivityResource1.toJsonObject();
+      final dynamic jsonobj = iotivityResource1!.toJsonObject();
       expect(jsonobj.id, '/sample/simulator/light/1');
       expect(jsonobj.uri, '/sample/simulator/light/1');
       expect(jsonobj.host, 'localhost');
@@ -70,7 +70,7 @@ void main() {
     });
 
     test("To Json", () {
-      final String jsonstr = iotivityResource1.toJson();
+      final String jsonstr = iotivityResource1!.toJson();
       expect(jsonstr,
           '{"id":"/sample/simulator/light/1","uri":"/sample/simulator/light/1","host":"localhost","provider":"iotivity","observable":true,"resourceTypes":["res1","res2"],"interfaceTypes":["int1","int2"]}');
     });
@@ -80,13 +80,13 @@ void main() {
   group("2. Dartivity Resource - ", () {
     test("Construction - from Iotivity", () {
       dartivityResource1 =
-          new DartivityResource.fromIotivity(iotivityResource1, cfg.clientId);
-      expect(dartivityResource1.id, '6ad1b60d34a3882a331376add8999ecd');
-      expect(dartivityResource1.clientId, cfg.clientId);
-      expect(dartivityResource1.provider, 'iotivity');
-      expect(dartivityResource1.resource, iotivityResource1);
-      expect(dartivityResource1.updated, isNotNull);
-      dartivityResource1Updated = dartivityResource1.updated;
+          new DartivityResource.fromIotivity(iotivityResource1!, cfg.clientId);
+      expect(dartivityResource1!.id, '6ad1b60d34a3882a331376add8999ecd');
+      expect(dartivityResource1!.clientId, cfg.clientId);
+      expect(dartivityResource1!.provider, 'iotivity');
+      expect(dartivityResource1!.resource, iotivityResource1);
+      expect(dartivityResource1!.updated, isNotNull);
+      dartivityResource1Updated = dartivityResource1!.updated;
     });
 
     test("To String - ", () {
@@ -99,12 +99,12 @@ void main() {
     });
 
     test("To JsonObject", () {
-      final dynamic jsonobj = dartivityResource1.toJsonObject();
+      final dynamic jsonobj = dartivityResource1!.toJsonObject();
       expect(jsonobj.id, '6ad1b60d34a3882a331376add8999ecd');
       expect(jsonobj.provider, 'iotivity');
       expect(jsonobj.clientId, cfg.clientId);
       expect(
-          jsonobj.updated == dartivityResource1Updated.millisecondsSinceEpoch,
+          jsonobj.updated == dartivityResource1Updated!.millisecondsSinceEpoch,
           true);
       final DartivityIotivityResource tmp =
           new DartivityIotivityResource.fromJsonObject(jsonobj.resource);
@@ -117,32 +117,32 @@ void main() {
     final DartivityCache cache = new DartivityCache();
 
     test("Put/Get", () {
-      cache.put(dartivityResource1.id, dartivityResource1);
-      final DartivityResource res = cache.get(dartivityResource1.id);
-      expect(res.id, dartivityResource1.id);
+      cache.put(dartivityResource1!.id, dartivityResource1);
+      final DartivityResource res = cache.get(dartivityResource1!.id);
+      expect(res.id, dartivityResource1!.id);
       expect(cache.count(), 1);
     });
 
     test("Delete", () {
-      cache.delete(dartivityResource1.id);
+      cache.delete(dartivityResource1!.id);
       expect(cache.count(), 0);
     });
 
     test("All", () {
       dartivityResource2 =
-          new DartivityResource.fromIotivity(iotivityResource2, cfg.clientId);
-      cache.put(dartivityResource1.id, dartivityResource1);
-      cache.put(dartivityResource2.id, dartivityResource2);
+          new DartivityResource.fromIotivity(iotivityResource2!, cfg.clientId);
+      cache.put(dartivityResource1!.id, dartivityResource1);
+      cache.put(dartivityResource2!.id, dartivityResource2);
       expect(cache.count(), 2);
-      final Map<String, dynamic> res = cache.all();
-      expect(res.containsKey(dartivityResource1.id), true);
-      expect(res.containsKey(dartivityResource2.id), true);
+      final Map<String?, dynamic> res = cache.all()!;
+      expect(res.containsKey(dartivityResource1!.id), true);
+      expect(res.containsKey(dartivityResource2!.id), true);
     });
 
     test("Keys", () {
-      final List<String> res = cache.keys();
-      expect(res[0] == dartivityResource1.id, true);
-      expect(res[1] == dartivityResource2.id, true);
+      final List<String?> res = cache.keys();
+      expect(res[0] == dartivityResource1!.id, true);
+      expect(res[1] == dartivityResource2!.id, true);
     });
 
     test("Clear", () {
@@ -151,15 +151,15 @@ void main() {
     });
 
     test("Bulk", () {
-      final List<DartivityResource> resList = [
+      final List<DartivityResource?> resList = [
         dartivityResource2,
         dartivityResource1
       ];
       cache.bulk(resList);
       expect(cache.count(), 2);
-      final Map<String, dynamic> res = cache.all();
-      expect(res.containsKey(dartivityResource1.id), true);
-      expect(res.containsKey(dartivityResource2.id), true);
+      final Map<String?, dynamic> res = cache.all()!;
+      expect(res.containsKey(dartivityResource1!.id), true);
+      expect(res.containsKey(dartivityResource2!.id), true);
       cache.clear();
       expect(cache.count(), 0);
     });
@@ -187,44 +187,44 @@ void main() {
     });
 
     test("Put Resource - initial", () async {
-      final DartivityResource res = await db.put(dartivityResource1);
+      final DartivityResource res = await db.put(dartivityResource1!);
       expect(res, isNotNull);
       expect(res.updated != dartivityResource1Updated, true);
       dartivityResource1Updated = res.updated;
     });
 
     test("Put Resource - subsequent", () async {
-      final DartivityResource res = await db.put(dartivityResource1);
+      final DartivityResource res = await db.put(dartivityResource1!);
       expect(res, isNotNull);
       expect(
-          res.updated.millisecondsSinceEpoch >
-              dartivityResource1Updated.millisecondsSinceEpoch,
+          res.updated!.millisecondsSinceEpoch >
+              dartivityResource1Updated!.millisecondsSinceEpoch,
           true);
       dartivityResource1Updated = res.updated;
       dartivityResource1 = res;
     });
 
     test("Get Resource ", () async {
-      final DartivityResource res = await db.get(dartivityResource1.id);
+      final DartivityResource res = await db.get(dartivityResource1!.id);
       expect(res, isNotNull);
-      expect(res.id == dartivityResource1.id, true);
+      expect(res.id == dartivityResource1!.id, true);
       expect(
-          res.updated.millisecondsSinceEpoch ==
-              dartivityResource1Updated.millisecondsSinceEpoch,
+          res.updated!.millisecondsSinceEpoch ==
+              dartivityResource1Updated!.millisecondsSinceEpoch,
           true);
     });
 
     test("Delete Resource ", () async {
-      final bool res = await db.delete(dartivityResource1);
+      final bool res = await db.delete(dartivityResource1!);
       expect(res, true);
     });
 
     test("Get all Resources ", () async {
-      final DartivityResource res1 = await db.put(dartivityResource1);
+      final DartivityResource res1 = await db.put(dartivityResource1!);
       expect(res1, isNotNull);
       expect(
-          res1.updated.millisecondsSinceEpoch >
-              dartivityResource1Updated.millisecondsSinceEpoch,
+          res1.updated!.millisecondsSinceEpoch >
+              dartivityResource1Updated!.millisecondsSinceEpoch,
           true);
       dartivityResource1Updated = res1.updated;
       dartivityResource1 = res1;
@@ -236,18 +236,18 @@ void main() {
           ['int1', 'int2'],
           true);
       dartivityResource2 =
-          new DartivityResource.fromIotivity(iotivityResource2, cfg.clientId);
-      final DartivityResource res2 = await db.put(dartivityResource2);
+          new DartivityResource.fromIotivity(iotivityResource2!, cfg.clientId);
+      final DartivityResource res2 = await db.put(dartivityResource2!);
       expect(res2, isNotNull);
-      final Map<String, DartivityResource> resAll = await db.all();
+      final Map<String?, DartivityResource> resAll = await db.all();
       expect(resAll, isNotNull);
       expect(resAll.length, 2);
       expect(resAll.containsKey(res1.id), true);
       expect(resAll.containsKey(res2.id), true);
       expect(resAll[res1.id] != resAll[res2.id], true);
-      bool res = await db.delete(dartivityResource1);
+      bool res = await db.delete(dartivityResource1!);
       expect(res, true);
-      res = await db.delete(dartivityResource2);
+      res = await db.delete(dartivityResource2!);
       expect(res, true);
     });
 
@@ -261,7 +261,7 @@ void main() {
           true);
       dartivityResource3 =
           new DartivityResource.fromIotivity(iotivityResource3, cfg.clientId);
-      final List<DartivityResource> resList = [
+      final List<DartivityResource?> resList = [
         dartivityResource1,
         dartivityResource2,
         dartivityResource3
@@ -272,7 +272,7 @@ void main() {
     });
 
     test("Bulk Insert - Update", () async {
-      final List<DartivityResource> resList = [
+      final List<DartivityResource?> resList = [
         dartivityResource1,
         dartivityResource2,
         dartivityResource3
@@ -282,15 +282,15 @@ void main() {
       expect(res, isNotNull);
       expect(res.length, 3);
       // Check we have correct revs returned
-      final DartivityResource res1 = await db.put(dartivityResource1);
+      final DartivityResource res1 = await db.put(dartivityResource1!);
       expect(res1, isNotNull);
 
       // Delete the resources
-      bool res3 = await db.delete(dartivityResource1);
+      bool res3 = await db.delete(dartivityResource1!);
       expect(res3, true);
-      res3 = await db.delete(dartivityResource2);
+      res3 = await db.delete(dartivityResource2!);
       expect(res3, true);
-      res3 = await db.delete(dartivityResource3);
+      res3 = await db.delete(dartivityResource3!);
       expect(res3, true);
     });
   });

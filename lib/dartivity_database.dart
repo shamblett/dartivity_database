@@ -11,7 +11,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:wilt/wilt.dart';
-import 'package:wilt/wilt_server_client.dart';
 import 'package:json_object_lite/json_object_lite.dart' as jsonobject;
 import 'package:crypto/crypto.dart' show md5;
 

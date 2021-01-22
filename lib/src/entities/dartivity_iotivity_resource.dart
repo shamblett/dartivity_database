@@ -33,41 +33,41 @@ class DartivityIotivityResource {
   //
   /// Client specific resource identifier, must
   /// be provided.
-  String _id;
+  String? _id;
 
-  String get id => _id;
+  String? get id => _id;
 
   /// Host
-  String _host;
+  String? _host;
 
-  String get host => _host;
+  String? get host => _host;
 
   /// Uri
-  String _uri;
+  String? _uri;
 
-  String get uri => _uri;
+  String? get uri => _uri;
 
   /// Provider
   final String provider = providerIotivity;
 
   /// Resource types
-  List<dynamic> _resourceTypes;
+  List<dynamic>? _resourceTypes;
 
-  List<dynamic> get resourceTypes => _resourceTypes;
+  List<dynamic>? get resourceTypes => _resourceTypes;
 
   /// Interface types
-  List<dynamic> _interfaceTypes;
+  List<dynamic>? _interfaceTypes;
 
-  List<dynamic> get interfaceTypes => _interfaceTypes;
+  List<dynamic>? get interfaceTypes => _interfaceTypes;
 
   /// Observable
-  bool _observable = false;
+  bool? _observable = false;
 
-  bool get observable => _observable;
+  bool? get observable => _observable;
 
   /// toString
   String toString() {
-    return _id;
+    return _id!;
   }
 
   /// Equality
@@ -78,7 +78,7 @@ class DartivityIotivityResource {
     return false;
   }
 
-  int get hashCode => int.tryParse(_id);
+  int get hashCode => int.tryParse(_id!)!;
 
   static const String mapIdentifier = "id";
   static const String mapUri = "uri";

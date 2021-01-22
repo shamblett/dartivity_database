@@ -13,51 +13,51 @@ class DartivityCache {
   /// Dartivity clients.
 
   /// The cache
-  Map<String, dynamic> _cache;
+  Map<String?, dynamic>? _cache;
 
   DartivityCache() {
-    _cache = new Map<String, dynamic>();
+    _cache = new Map<String?, dynamic>();
   }
 
   /// get
-  dynamic get(String key) {
-    if (_cache.containsKey(key)) {
-      return _cache[key];
+  dynamic get(String? key) {
+    if (_cache!.containsKey(key)) {
+      return _cache![key];
     } else {
       return null;
     }
   }
 
   /// put
-  void put(String key, dynamic resource) {
-    _cache[key] = resource;
+  void put(String? key, dynamic resource) {
+    _cache![key] = resource;
   }
 
   /// delete
-  void delete(String key) {
-    if (_cache.containsKey(key)) {
-      _cache.remove(key);
+  void delete(String? key) {
+    if (_cache!.containsKey(key)) {
+      _cache!.remove(key);
     }
   }
 
   /// clear
   void clear() {
-    _cache.clear();
+    _cache!.clear();
   }
 
   /// all
-  Map<String, dynamic> all() {
+  Map<String?, dynamic>? all() {
     return _cache;
   }
 
   /// count
   int count() {
-    return _cache.length;
+    return _cache!.length;
   }
 
   /// keys
-  List<String> keys() {
-    return _cache.keys.toList();
+  List<String?> keys() {
+    return _cache!.keys.toList();
   }
 
   /// bulk
